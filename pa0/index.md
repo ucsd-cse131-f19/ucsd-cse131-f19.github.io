@@ -37,34 +37,10 @@ a functional style, which is predominantly how we'll use OCaml.
 
 ## Setup
 
-OCaml is installed on the ACMS machines; you can go to
-[the ETS Page](https://sdacs.ucsd.edu/~icc/index.php) to get your
-account.  You need to do a small bit of setup to use some libraries we'll need
-for the course.  Open up the file `.bashrc` in your home directory (with
-e.g. `vim ~/.bashrc`), and add these lines at the bottom:
+### On Your Own Machine
 
-```
-eval `opam config env --root=/home/linux/ieng6/cs131s/public/opam`
-. /home/linux/ieng6/cs131s/public/opam/opam-init/init.sh
-```
-
-Then run:
-
-```
-$ source ~/.bashrc
-```
-
-Also append the following to your `.bash_profile` file as well:
-```
-if [ -f ~/.bashrc ]; then
-    source ~/.bashrc
-fi
-```
-
-This makes it so each time you open a terminal, the build commands you run for
-OCaml will be able to use some libraries we need for the course.
-
-### Other Platform Instructions
+One of the fun things about this course is that the compilers we build work
+natively on a wide range of typical platforms.
 
 If you want to work on your own machine, you can install OCaml and OPAM via
 their platform-specific instructions. Everything in the course should be able
@@ -80,6 +56,15 @@ packages after setting up OCaml and OPAM:
 ```
 $ opam install extlib ounit ocamlfind
 ```
+
+### On Department Machines
+
+There's no need to have, set up, or use your own computer for this course.
+OCaml and all the needed tools are installed on the ACMS machines; you can go
+to [the ETS Page](https://sdacs.ucsd.edu/~icc/index.php) to get your account.
+You can log into any of the Linux machines in the CSE labs and all the
+commands below should be available in the terminal -- let us know if they
+aren't.
 
 ### Github & Gradescope
 

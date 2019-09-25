@@ -8,9 +8,9 @@ doodle: "/doodle.png"
 
 **This site is under revision -- this notice will be removed when contents are finalized.**
 
-<p>
-<a href="https://jpolitz.github.io">Joe Gibbs Politz</a> (Instructor)
-</p>
+- <a href="https://jpolitz.github.io">Joe Gibbs Politz</a> (Instructor)
+- Dharmendra Chaturvedi (TA)
+- Kasra Ferdowsifard (TA)
 
 <p>
 <a href="#basics">Basics</a> -
@@ -38,11 +38,11 @@ course, as well as the syllabus.
 ## Basics
 
 - Lecture: Center 109, 9:30am Tue/Thu
-- Discussion: Center 212, 8am F **Some attendance required for tests**
-- **Tests (in Discussion Section)**: Oct 11, Nov 1, Nov 22
-- **Final**: Dec 12, 8am-11am, Location TBA
+- Discussion: Center 212, 8am F
+- Tests **(in Friday Discussion Section)**: Oct 11, Nov 1, Nov 22
+- Final: Dec 12, 8am-11am, Location TBA
 
-- Podcasts: <a href="https://podcast.ucsd.edu/podcasts/default.aspx?PodcastId=4931">https://podcast.ucsd.edu/podcasts/default.aspx?PodcastId=4931</a>
+- Podcasts: [Coming Soon]
 - Gradescope: <a href="https://www.gradescope.com">https://www.gradescope.com</a> will be used for submissions (instructions will accompany the first programming assignment)
 - Textbook/readings: There's no official textbook, but I'll link to different
   online resources for you to read to supplement lecture. Versions of this
@@ -115,7 +115,7 @@ Your grade will be calculated from:
   - PA7 **open collab** (garbage collection): 6%
   - PA8 **open collab** (projects): 6%
 - 40% exams
-  - 16% for best 2 of 3 tests taken in discussion section
+  - 16% for best 2 of 3 tests
   - 24% final exam
     - You must pass the final exam to pass the course
     - The final exam will allow for some amount of make-up points for the
@@ -234,6 +234,21 @@ along with exams to avoid unnecessary memorization.
 
 You cannot discuss the content of exams with others in the course until grades
 have been released for that exam.
+
+There are **three** tests during the quarter, all held during discussion
+section. This allows us to give you frequent updates on your understanding of
+the material, is good for your learning for various reasons, and gives you
+plenty of practice with the test format before the final exam.
+
+Your top 2 scores out of these three will be used for your test score,
+counting at 8% each of your final grade. If you miss one, it counts as a 0.
+In addition, the final exam will test similar material to the three tests
+during the quarter, and you will be able to use the final exam to make up for
+some missed credit on the tests. There are no re-takes of tests allowed.
+
+Some past exams are available at the link below for reference on format:
+
+https://drive.google.com/drive/folders/1yPxZ-nqRpC9Gz63JIavhQgfnyhA0uGIs?usp=sharing
 
 
 ### Diversity and Inclusion
