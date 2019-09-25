@@ -34,7 +34,7 @@ through design challenges based on what you learn from implementation.
 This web page serves as the main source of announcements and resources for the
 course, as well as the syllabus.
 
-<a id="basics">
+<a id="basics"></a>
 ## Basics
 
 - Lecture: Center 109, 9:30am Tue/Thu
@@ -43,14 +43,13 @@ course, as well as the syllabus.
 - **Final**: Dec 12, 8am-11am, Location TBA
 
 - Podcasts: <a href="https://podcast.ucsd.edu/podcasts/default.aspx?PodcastId=4931">https://podcast.ucsd.edu/podcasts/default.aspx?PodcastId=4931</a>
-- Piazza: <a href="https://piazza.com/class/jfh8ukqgp5h521">https://piazza.com/class/jfh8ukqgp5h521</a>
 - Gradescope: <a href="https://www.gradescope.com">https://www.gradescope.com</a> will be used for submissions (instructions will accompany the first programming assignment)
 - Textbook/readings: There's no official textbook, but I'll link to different
   online resources for you to read to supplement lecture. Versions of this
   course have been taught at several universities, so sometimes I'll link to
   those instructor's materials.
 
-<a id="schedule">
+<a id="schedule"></a>
 ## Schedule
 
 The schedule below outlines topics, due dates, and links to assignments. In a
@@ -67,7 +66,7 @@ week out by Thursday evening.)
 
 <iframe width="125%" height="500px" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRhE-LXEqDjFYCTHjXfm3RmaJSY3zhlxihkzo1KCfGof-vm9CtnG3jxS2HumYUIVszN_LDrvq5bAFxT/pubhtml?gid=1954416302&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
 
-<a id="staff">
+<a id="staff"></a>
 ## Staff & Resources
 
 ### Office Hours
@@ -87,7 +86,7 @@ FILL Calendar
 - [OCaml Tutorial](http://mirror.ocamlcore.org/ocaml-tutorial.org/)
 - [An Incremental Approach to Compiler Construction](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf)
 
-<a id="grading">
+<a id="grading"></a>
 ## Grading
 
 Your grade will be calculated from:
@@ -122,29 +121,8 @@ Your grade will be calculated from:
     - The final exam will allow for some amount of make-up points for the
     tests (details to come)
 
-<a id="policies">
+<a id="policies"></a>
 ## Policies
-
-### Late Work
-
-Late work is generally not accepted, because often we'll release partial or
-full solutions immediately following the deadline for an assignment.
-
-### Regrades
-
-Mistakes occur in grading. Once grades are posted for an assignment, we will
-allow a short period for you to request a fix (announced along with grade
-release). If you don't make a request in the given period, the grade you were
-initially given is final.
-
-### Exams
-
-You are not allowed any study aids on in-class exams, aside from those
-pertaining to university-approved accommodations. References will be provided
-along with exams to avoid unnecessary memorization.
-
-You cannot discuss the content of exams with others in the course until grades
-have been released for that exam.
 
 ### Programming
 
@@ -175,7 +153,7 @@ of working through a problem on your own is _healthy_ frustration).
 There are two types of assignments in this course:
 
 - **Open collaboration** assignments, for which you can talk to anyone else in the
-  course, post snippets of code on Piazza, get lots of help from TAs, and
+  course, post snippets of code online, get lots of help from TAs, and
   generally come up with solutions collaboratively. TAs will be happy to look
   at your code and suggest fixes, along with explaining them. There are a few
   restrictions:
@@ -202,16 +180,30 @@ There are two types of assignments in this course:
     from students outside of this offering of the class. All the code that is
     handed in should be developed by you or someone in the class.
 
+  This doesn’t mean the staff will be handing out answers. We’ll mostly
+  respond with leading questions and advice, and you shouldn’t expect a
+  direct answer to questions like “am I done?” or “is my code right?”
+
+  There is no guarantee the assistance you get from your classmates is
+  correct. It is your responsibility to use your judgment to avoid using an
+  idea on the course message board that is wrong, or doesn’t work with your
+  solution; we won’t necessarily tell you one way or another while the
+  assignment is out.
+
+  If we see that you used code from other students and didn’t cite it in
+  the README, the penalty will range from a point deduction to an academic
+  integrity violation, depending on the severity. Always cite your work!
+
 - **Closed collaboration** assignments, where you cannot collaborate with others.
-  You can ask clarification questions as private posts on Piazza or of TAs.
+  You can ask clarification questions as private posts or of TAs.
   However, TAs will not look at your code or comment on it. Lab/office hours
   these weeks are for conceptual questions or for questions about past
   assignments only, no code assistance. On these assignments:
     - You cannot look at or use anyone else's code
     - You cannot discuss the assignment with other students
-    - You cannot post publicly about the assignment on Piazza (or on social
-      media or other forums). Of course, you can still post questions about
-      material from lecture on Piazza!
+    - You cannot post publicly about the assignment on the course message
+      board (or on social media or other forums). Of course, you can still
+      post questions about material from lecture or past assignments!
     - All of the examples in the open collaboration section above would be
       academic integrity violations on a closed collaboration assignment
 
@@ -221,6 +213,28 @@ collaboration.
 You should be familiar with [the UCSD
 guidelines](http://senate.ucsd.edu/Operating-Procedures/Senate-Manual/Appendices/2)
 on academic integrity as well.
+
+### Late Work
+
+Late work is generally not accepted, because often we'll release partial or
+full solutions immediately following the deadline for an assignment.
+
+### Regrades
+
+Mistakes occur in grading. Once grades are posted for an assignment, we will
+allow a short period for you to request a fix (announced along with grade
+release). If you don't make a request in the given period, the grade you were
+initially given is final.
+
+### Exams
+
+You are not allowed any study aids on in-class exams, aside from those
+pertaining to university-approved accommodations. References will be provided
+along with exams to avoid unnecessary memorization.
+
+You cannot discuss the content of exams with others in the course until grades
+have been released for that exam.
+
 
 ### Diversity and Inclusion
 
