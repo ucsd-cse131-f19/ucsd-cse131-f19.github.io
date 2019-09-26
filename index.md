@@ -40,7 +40,7 @@ course, as well as the syllabus.
 - Tests **(in Friday Discussion Section)**: Oct 18, Nov 15
 - Final Exam: Dec 12, 8am-11am, Location TBA
 
-- Podcasts: [Coming Soon]
+- Podcasts: [https://podcast.ucsd.edu/watch/fa19/cse131_a00](https://podcast.ucsd.edu/watch/fa19/cse131_a00)
 - Q&A Forum [Campuswire](https://campuswire.com/c/GF25166F0), use access code 8255
 - Gradescope: <a href="https://www.gradescope.com">https://www.gradescope.com</a> will be used for submissions (instructions will accompany the first programming assignment)
 - Textbook/readings: There's no official textbook, but we will link to
