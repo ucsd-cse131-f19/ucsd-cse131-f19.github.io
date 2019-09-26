@@ -329,7 +329,7 @@ where the return values of function calls end up.
 
 Testing by printing values becomes pretty onerous when we want to write more
 than a few examples.  In this course, we'll use a library called
-(OUnit)[http://ounit.forge.ocamlcore.org/api-ounit/index.html] to write tests.
+[OUnit](http://ounit.forge.ocamlcore.org/api-ounit/index.html) to write tests.
 
 With OUnit, we will write declarations in one file, and test them in another.
 The code provided in your checkout has two files: `functions.ml`, which
@@ -705,7 +705,7 @@ Note that the last two tests mean the same thing; they are just different ways
 of writing the same list containing 3, 4, and 5.
 
 Since lists are quite a fundamental structure, we will end up using them
-frequently; handy functions to use with lists are (here)[http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html],
+frequently; handy functions to use with lists are [here](http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html),
 and we'll talk about them more as we build up more experience with OCaml.
 
 ### Exercises
@@ -718,7 +718,7 @@ and we'll talk about them more as we build up more experience with OCaml.
   list` and an `int` and produces a new `string list` that contains all
   the strings that had length greater than the given `int`.  You can get
   the length of a string with the function `String.length`.  Other string
-  functions are documented (here)[http://caml.inria.fr/pub/docs/manual-ocaml/libref/String.html].
+  functions are documented [here](http://caml.inria.fr/pub/docs/manual-ocaml/libref/String.html).
 
 3.  Write and test a function `every_other` that takes a `'a list`
   (a list with elements of any one type), and produces a new list that
@@ -996,7 +996,7 @@ into object (`.o`) files that traditional compilers like `clang` or `gcc` can
 work with.  The command we'll use to build with nasm is:
 
 ```
-⤇ nasm -f elf64 -o our_code.o our_code.s [FILL]
+⤇ nasm -f elf64 -o our_code.o our_code.s
 ```
 
 This creates a file called `our_code.o` in [Executable and Linkable
