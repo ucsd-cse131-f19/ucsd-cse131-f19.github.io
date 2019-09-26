@@ -834,7 +834,7 @@ option, we would write:
 let rec find_opt (l : 'a list) (pred : 'a -> bool) : 'a option =
   match l with
     | [] -> None
-    | x::xs -> if pred x then Some(x) else find xs pred;;
+    | x::xs -> if pred x then Some(x) else find_opt xs pred;;
 
 (find_opt [1;2;3] (fun n -> n > 4);; (* returns None *)
 (find_opt [1;2;3] (fun n -> n > 2);; (* returns Some(3) *)
