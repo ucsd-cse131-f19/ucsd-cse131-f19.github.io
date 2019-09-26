@@ -106,6 +106,8 @@ Your grade will be calculated from:
     credit for getting at least half the questions right
   - Quiz scores can be checked [here (coming soon)]
 - 50% programming assignments (8 total)
+  This list may shift slightly, but it's a close estimate and any changes
+  will be reflected here.
   - PA0 **open collab** (warmup): 2%
   - PA1 **closed collab** (let and arithmetic): 4%
   - PA2 **open collab** (tagged values): 4%
@@ -114,7 +116,7 @@ Your grade will be calculated from:
   - PA5 **open collab** (using heap allocated data): 6%
   - PA6 **closed collab** (implementing heap alloc): 8%
   - PA7 **open collab** (garbage collection): 6%
-  - PA8 **open collab** (projects): 6%
+  - PA8 **open collab** (project): 6%
 - 40% exams
   - 16% for in-class exams
   - 24% final exam
@@ -227,6 +229,7 @@ allow a short period for you to request a fix (announced along with grade
 release). If you don't make a request in the given period, the grade you were
 initially given is final.
 
+
 ### Exams
 
 There will be two tests during the quarter (held in discussion section) and a
@@ -251,6 +254,27 @@ Some past exams are available at the link below for reference on format
 representative):
 
 https://drive.google.com/drive/folders/1yPxZ-nqRpC9Gz63JIavhQgfnyhA0uGIs?usp=sharing
+
+### Laptop/Device Policy in Lecture
+
+There are lots of great reasons to have a laptop, tablet, or phone open
+during class. You might be taking notes, getting a photo of an important
+moment on the board, trying out a program that we're developing together, and
+so on. The main issue with screens and technology in the classroom isn't your
+own distraction (which is your responsibility to manage), it's the
+distraction of **other students**. Anyone sitting behind you cannot help but
+have your screen in their field of view. Having distracting content on your
+screen can really harm their learning experience.
+
+With this in mind, the device policy for the course is that if you have a
+screen open, you either:
+
+- Have only content onscreen that's directly related to the current lecture.
+- Have unrelated content open and **sit in one of the back two rows of the
+room** to mitigate the effects on other students. I may remind you of this
+policy if I notice you not following it in class. Note that I really don't
+mind if you want to sit in the back and try to multi-task in various ways
+while participating in lecture (I may not recommend it, but it's your time!)
 
 ### Diversity and Inclusion
 
