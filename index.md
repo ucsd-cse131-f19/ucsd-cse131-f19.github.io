@@ -102,8 +102,10 @@ Your grade will be calculated from:
     points, if you attend 2 lectures, you get 0 participation points)
   - Clicker scores can be checked [here (coming soon)]
 - 5% review quizzes
-  - Each week there will be an online review quiz, you get full review quiz
-    credit for getting at least half the questions right
+  - Each week there will be an online review quiz due Monday evening, you get
+  full review quiz credit for getting at least half the questions right.
+  - For full credit, you need to get credit for 5 quizzes. For each quiz
+  fewer than 5 you complete, you lose one of the review quiz points, minimum 0.
   - Quiz scores can be checked [here (coming soon)]
 - 50% programming assignments (8 total)
   This list may shift slightly, but it's a close estimate and any changes
