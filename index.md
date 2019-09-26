@@ -38,16 +38,17 @@ course, as well as the syllabus.
 ## Basics
 
 - Lecture: Center 109, 9:30am Tue/Thu
-- Discussion: Center 212, 8am F
-- Tests **(in Friday Discussion Section)**: Oct 11, Nov 1, Nov 22
-- Final: Dec 12, 8am-11am, Location TBA
+- Discussion Section: Center 212, 8am F
+- Tests **(in Friday Discussion Section)**: Oct 25, Nov 22
+- Final Exam: Dec 12, 8am-11am, Location TBA
 
 - Podcasts: [Coming Soon]
+- Q&A Forum [Campuswire](https://campuswire.com/c/GF25166F0), use access code 8255
 - Gradescope: <a href="https://www.gradescope.com">https://www.gradescope.com</a> will be used for submissions (instructions will accompany the first programming assignment)
-- Textbook/readings: There's no official textbook, but I'll link to different
-  online resources for you to read to supplement lecture. Versions of this
-  course have been taught at several universities, so sometimes I'll link to
-  those instructor's materials.
+- Textbook/readings: There's no official textbook, but we will link to
+  different online resources for you to read to supplement lecture. Versions
+  of this course have been taught at several universities, so sometimes I'll
+  link to those instructors' materials as well.
 
 <a id="schedule"></a>
 ## Schedule
@@ -74,10 +75,10 @@ Office hours are concentrated on Friday, Monday, and Tuesday, since most
 assignments are due Wednesday. Please check the calendar before you come in
 case there have been any changes. When you come to the office hour, we may
 ask you to put your name in the queue using the whiteboard. Read the
-description about [collaboration below](FILL) for some context about office
-hours.
+description about [collaboration below](#policies) for some context about office
+hours. (Joe will set his office hours by the end of the first week).
 
-FILL Calendar
+<iframe src="https://calendar.google.com/calendar/embed?src=eng.ucsd.edu_qie58tivkeduh90ap8kgje90ik%40group.calendar.google.com&ctz=America%2FLos_Angeles" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
 
 ### Useful Resources
 
@@ -115,11 +116,11 @@ Your grade will be calculated from:
   - PA7 **open collab** (garbage collection): 6%
   - PA8 **open collab** (projects): 6%
 - 40% exams
-  - 16% for best 2 of 3 tests
+  - 16% for in-class exams
   - 24% final exam
     - You must pass the final exam to pass the course
-    - The final exam will allow for some amount of make-up points for the
-    tests (details to come)
+    - The final exam will have questions that allow you to regain credit lost
+    on in-class exams
 
 <a id="policies"></a>
 ## Policies
@@ -228,28 +229,28 @@ initially given is final.
 
 ### Exams
 
-You are not allowed any study aids on in-class exams, aside from those
-pertaining to university-approved accommodations. References will be provided
-along with exams to avoid unnecessary memorization.
+There will be two tests during the quarter (held in discussion section) and a
+final exam. There are no make-up tests for the tests during the quarter.
+However, the final exam will have sections that correspond to each of the
+in-class tests, and if your score on that part of the final is higher than
+your score on that in-class test, the exam score replaces it. This includes
+the case where you miss an in-class test (scoring a 0), but can regain credit
+from that part of the final exam. This policy is designed to encourage you to
+treat the in-class tests as _learning opportunities_ so that you can study
+any mistakes you make and re-apply that knowledge on the final.
+
+You are not allowed any study aids on exams, aside from those pertaining to
+university-approved accommodations. References will be provided along with
+exams to avoid unnecessary memorization.
 
 You cannot discuss the content of exams with others in the course until grades
 have been released for that exam.
 
-There are **three** tests during the quarter, all held during discussion
-section. This allows us to give you frequent updates on your understanding of
-the material, is good for your learning for various reasons, and gives you
-plenty of practice with the test format before the final exam.
-
-Your top 2 scores out of these three will be used for your test score,
-counting at 8% each of your final grade. If you miss one, it counts as a 0.
-In addition, the final exam will test similar material to the three tests
-during the quarter, and you will be able to use the final exam to make up for
-some missed credit on the tests. There are no re-takes of tests allowed.
-
-Some past exams are available at the link below for reference on format:
+Some past exams are available at the link below for reference on format
+(content changes from offering to offering so this may not be
+representative):
 
 https://drive.google.com/drive/folders/1yPxZ-nqRpC9Gz63JIavhQgfnyhA0uGIs?usp=sharing
-
 
 ### Diversity and Inclusion
 
