@@ -42,15 +42,16 @@ a functional style, which is predominantly how we'll use OCaml.
 One of the fun things about this course is that the compilers we build work
 natively on a wide range of typical platforms.
 
-If you want to work on your own machine, you can install OCaml and OPAM via
+If you want to work on your own machine, you can install OCaml and [OPAM](https://opam.ocaml.org/doc/Install.html) via
 their platform-specific instructions. Everything in the course should be able
 to run on platforms other than Windows as long as the machine has x86-64
 architecture. On Windows we recommend using windows subsystem for linux
 (https://docs.microsoft.com/en-us/windows/wsl/install-win10). For some of the
 later assignments in the course, we will be using features that may only work
-on OSX and Linux.
+on OSX and Linux (though with an update to the calling convention, things
+would work on Windows).
 
-In order to run the code we use in the course, you will need to install som
+In order to run the code we use in the course, you will need to install some
 packages after setting up OCaml and OPAM:
 
 ```
@@ -68,17 +69,18 @@ aren't.
 
 ### Github & Gradescope
 
-Assignments this semester will be distributed through Github Classroom and
-submitted through Gradescope. You must submit this first assignment on your
-own (future assignments may allow group submission) to make sure everyone's
-Gradescope account is working.
+Assignments this semester will be distributed through Github and submitted
+through Gradescope. You must submit this first assignment on your own (future
+assignments may allow group submission) to make sure everyone's Gradescope
+account is working.
 
-FILL LINK
+You can get a copy of the starter code from here:
+
+[https://github.com/ucsd-cse131-f19/pa0](https://github.com/ucsd-cse131-f19/pa0)
 
 See [handin](./#handin) at the bottom of this page for instructions on
-turning things in on Gradescope. You should have gotten a Gradescope invite
-within the first day or two of the course, let us know [FILL] if you haven't
-ASAP.
+turning things in on Gradescope. You should get a Gradescope invite within
+the first day or two of the course, let us know if you haven't ASAP.
 
 ## Programming in OCaml – The Basics
 
@@ -1128,13 +1130,18 @@ output to play with?
 <a id="#handin"></a>
 ### Handin
 
-When submitting the assignment on Gradescope, make sure to use the "GitHub"
-button and select the repository that was automatically created for this
-assignment (`pa0--username` where `username` is your GitHub username).
+When submitting the assignment on Gradescope, you have two options.
 
-In the `compiler` directory, make sure to add your `Makefile`, `compile.ml`,
-and `main.c` for the compiler part, along with your additions to `functions.ml`
-and `test.ml` and submit. Don't hand in any `.s`, `.o`, or `.run` files. We're
-just going to check that we can make a source file and run it through this
-process.
+- You can make a `zip` of your code by zipping the root directory that you
+checked out, and uploading as a zip file.
+- If your code is on Github, you can use the "GitHub" button and select your
+repository.
 
+Some notes specific to this assignment: In the `compiler` directory, make
+sure to add your `Makefile`, `compile.ml`, and `main.c` for the compiler
+part. In the root directory, include your additions to `functions.ml` and
+`test.ml` and submit. Don't hand in any `.s`, `.o`, or `.run` files. You'll
+get some automated feedback from the grader when you submit that tells you if
+you're done. Future assignments will give some automated feedback, may
+include manual grading, and may withold some tests for grading after the
+deadline.
