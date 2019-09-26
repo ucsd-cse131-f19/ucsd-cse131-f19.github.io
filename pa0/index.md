@@ -1078,8 +1078,8 @@ pipeline of compilation to work out:
 
 ```
 ⤇ ocaml compile.ml 87.int > 87.s
-⤇ nasm -f elf32 -o 87.o 87.s
-⤇ clang -m32 -o 87.run main.c 87.o
+⤇ nasm -f elf64 -o 87.o 87.s
+⤇ clang -o 87.run main.c 87.o
 ⤇ ./87.run
 87
 ```
