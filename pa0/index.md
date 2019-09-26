@@ -698,7 +698,7 @@ And we could test it by creating tests with `t_int`:
 t_int "sum2_empty" (sum2 []) 0;
 t_int "sum2_single" (sum2 [5]) 5;
 t_int "sum2_longer" (sum2 [3; 4; 5]);
-t_int "sum2_longer2" (sum2 3::4::5::[]);
+t_int "sum2_longer2" (sum2 (3::4::5::[]));
 ```
 
 Note that the last two tests mean the same thing; they are just different ways
@@ -1078,7 +1078,7 @@ pipeline of compilation to work out:
 
 ```
 ⤇ ocaml compile.ml 87.int > 87.s
-⤇ nasm -f elf64 -o 87.o 87.s
+⤇ nasm -f elf64 -o 87.o 87.s # Use macho64 instead of elf64 for OSX
 ⤇ clang -o 87.run main.c 87.o
 ⤇ ./87.run
 87
@@ -1091,7 +1091,8 @@ If we like, we could capture this set of dependencies with a `make` rule:
 	clang -o $@ main.c $<
 
 %.o: %.s
-	nasm -f elf64 -o $@ $< # macho64 for OSX
+	nasm -f elf64 -o $@ $<
+	# Use macho64 instead of elf64 for OSX
 
 %.s: %.int
 	ocaml compile.ml $< > $@
