@@ -16,7 +16,7 @@ the listed **Exercises** in the file `functions.ml` and test them in
 `test.ml` for the OCaml portion. You will also create a few files in the
 `compiler/` directory for the compiler.
 
-You should hand everything in on  _Wednesday, October 2_ by 10:00PM.
+You should hand everything in on  _Wednesday, October 2_ by 11:00PM.
 
 [OCaml Basics](#ocaml-basics) – [A First Compiler](#neonate)
 
