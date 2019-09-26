@@ -6,8 +6,6 @@ doodle: "/doodle.png"
 
 # Compiler Construction
 
-**This site is under revision -- this notice will be removed when contents are finalized.**
-
 - <a href="https://jpolitz.github.io">Joe Gibbs Politz</a> (Instructor)
 - Dharmendra Chaturvedi (TA)
 - Kasra Ferdowsifard (TA)
@@ -171,7 +169,7 @@ There are two types of assignments in this course:
       - **Example:** On an open collaboration assignment, a student posts the
         compilation strategy they used to handle a type of expression you were
         struggling with. Your README should say “I used the code from
-        https://piazza.com/class/id-of-post”
+        the forum post at [link]”
   - Anyone you work with in-person must be noted in your README
       - **Example:** You and another student sit next to each other in the lab,
         and point out mistakes and errors to one another as you work through
