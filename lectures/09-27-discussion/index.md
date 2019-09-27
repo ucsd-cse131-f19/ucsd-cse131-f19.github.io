@@ -4,7 +4,7 @@ title: "First Discussion Notes"
 doodle: "../../doodle.png"
 ---
 
-## Programming in Ocaml
+## 09-27 Discussion: Programming in Ocaml
 
 [Code from discussion: lec.ml](./lec.ml)
 
