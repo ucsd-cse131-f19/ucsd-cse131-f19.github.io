@@ -19,10 +19,6 @@ let rec eval (e : expr) : int =
     | ExprNode("+", lhs, rhs) -> (eval lhs) + (eval rhs)
     | ExprNode("-", lhs, rhs) -> (eval lhs) - (eval rhs)
     | ExprNode(_, lhs, rhs) -> failwith "Unknown operator"
-      if op = "+" then
-      else if op = "-" then
-      else
-        failwith "Unknown operator"
 ;;
 
 (printf "%d\n" (eval e1));

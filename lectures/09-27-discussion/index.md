@@ -6,6 +6,8 @@ doodle: "../doodle.png"
 
 ## Programming in Ocaml
 
+[Code from discussion: lec.ml](./lec.ml)
+
 ### Details of `max`
 
 The first example we did (`max`), is well-covered in the [pa0
