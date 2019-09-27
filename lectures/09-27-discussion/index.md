@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "First Discussion Notes"
-doodle: "../doodle.png"
+doodle: "../../doodle.png"
 ---
 
 ## Programming in Ocaml
