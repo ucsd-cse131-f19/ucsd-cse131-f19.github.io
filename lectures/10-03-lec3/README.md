@@ -1,6 +1,6 @@
-[Names & the Stack](https://course.ccs.neu.edu/cs4410/lec_let-and-stack_notes.html)
-[All (we will say) About Parsing](http://papl.cs.brown.edu/2017/Processing_Programs__Parsing.html)
-[Infix Operators](https://course.ccs.neu.edu/cs4410/lec_anf_notes.html)
+- [Names & the Stack](https://course.ccs.neu.edu/cs4410/lec_let-and-stack_notes.html)
+- [All (we will say) About Parsing](http://papl.cs.brown.edu/2019/Processing_Programs__Parsing.html)
+- [Infix Operators](https://course.ccs.neu.edu/cs4410/lec_anf_notes.html)
 
 The parsing link is not notes written with this course in mind, but is from a related programming languages textbook. It uses a programming language called Pyret for its examples, but the code should be recognizable. The cases expression in Pyret is similar to match in OCaml, and the data blocks are similar to type in OCaml. We will use a similar argument and s-expression parsing library for our work this quarter.
 
