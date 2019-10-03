@@ -13,9 +13,12 @@ _multiple_ variables defined within a single let.
 
 ## Setup
 
-Get the assignment FILL (classroom link). You can make a copy (it will be
-made private for you) via that Github Classroom link. You can also access the
-public starter code here: FILL
+Get the assignment at [Github
+Classroom](https://classroom.github.com/a/maFoIzu3). This will make a
+private-to-you copy of the repository hosted within the course's
+organization. You can also access the public starter code [directly from this
+public URL](https://github.com/ucsd-cse131-f19/pa1-student) if you don't have
+or prefer not to use a Github account.
 
 ## The Anaconda Language
 
@@ -338,7 +341,7 @@ assignment are:
 * `IMul of arg * arg` — Multiply the left argument by the right argument, and
   store in the left argument (typically the left argument is `rax` for us)
 
-  Example: `imul eax, 4`
+  Example: `imul rax, 4`
 
 ### Running main
 
@@ -386,7 +389,7 @@ If your tests do not have any errors, a `.s` file and `.run` executable is gener
 in the `output/` directory, containing the compiled assembly code and executable
 for that case.
 
-You can test all the provided tests and the tests you have provided in @tt{myTests.ml}
+You can test all the provided tests and the tests you have provided in `myTests.ml`
 by running
 ```
 $ make test
