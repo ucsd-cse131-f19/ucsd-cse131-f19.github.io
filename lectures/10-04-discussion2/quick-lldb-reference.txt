@@ -1,0 +1,42 @@
+$ lldb <program-name>.run
+
+Within lldb:
+
+run
+
+  Start running the program
+
+b our_code_starts_here (or any other label)
+
+  Set a breakpoint at the given label
+
+d <number>
+
+  Show <number> lines starting at the current breakpoint (d stands for
+  "disassemble")
+
+si
+
+  Step by a single instruction
+
+reg read (can be abbreviated to reg r)
+
+  Show _all_ the registers' values
+
+reg r rax rsp
+
+  Show the values of rax and rsp (can list any registers)
+
+x -c10 -s8 -fx $rsp  
+
+  Examine 10 8-byte words of memory in hex format starting at the address
+  stored in rsp
+
+x -c1 -s8 -fx $rsp-8
+
+  Examine the value at address $rsp-8
+
+continue (or just c)
+
+  Keep running the program (until a breakpoint is hit)
+
