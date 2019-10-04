@@ -2,6 +2,9 @@
 open Sexplib.Sexp
 module Sexp = Sexplib.Sexp
 
+(* NOTE! This file was used to demonstrate bugs in discussion, it is not
+guaranteed to have good or correct code! *)
+
 
 (*
 expr := <number>
@@ -65,9 +68,9 @@ let rec e_to_is (e : expr) (si : int) (env : tenv) =
 let e1is = e_to_is e1 si env in
 let e2is = e_to_is e2 si env in
 e1is @
-["mov ebx, rax"] @
+["mov rbx, rax"] @
 e2is @
-["add rax, ebx"]
+["add rax, rbx"]
     | EId(x) ->
       (match find env x with
         | None -> failwith "Unbound id"
