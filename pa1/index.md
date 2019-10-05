@@ -85,7 +85,7 @@ assembly code for each instruction.
 
 An Anaconda program always evaluates to a single integer.
 
-- <code>**Number**s</code> evaluate to
+- Numbers evaluate to
 themselves (so a program just consisting of `Number(5)` should evaluate to the
 integer `5`).
 - Primitive expressions perform addition or subtraction by one on
