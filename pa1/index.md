@@ -102,8 +102,8 @@ There are several examples further down to make this concrete.
 
 The _compiler_ should stop and report an error if:
 
-* There is a binding list containing two or more bindings with the same name
-* An identifier is unbound (there is no surrounding let binding for it)
+* There is a binding list containing two or more bindings with the same name. **The error should contain the string `"Duplicate binding"`**
+* An identifier is unbound (there is no surrounding let binding for it) **The error should contain the string `"Unbound variable identifier {identifier}"` (where the actual name of the variable is substituted for `{identifier}`)**
 
 Here are some examples of Anaconda programs:
 
@@ -230,7 +230,7 @@ For more info about S-expressions in Core, see [here](https://dev.realworldocaml
 Thus, an example S-expression that could be parsed into a program would be as
 follows
 ```
-List([Atom("let"); List([List([Atom("x"); Atom("5")])]) Atom("x")])
+List([Atom("let"); List([List([Atom("x"); Atom("5")])]); Atom("x")])
 ```
 which corresponds to
 ```
@@ -251,7 +251,7 @@ which can then be compiled.
 Since most S-expressions are lists, you will need to check the first element
 of the list to see if the operation to perform is a `let`, `add1`, `*`, and so
 on. If a S-expression is of an invalid form, (i.e. a `let` with no body, a `+`
-with three arguments, etc.) report an error using failwith.
+with three arguments, etc.) report an error using failwith **that contains the string `"Invalid"`**.
 
 You can assume that an id is a valid string of form `[a-zA-z][a-zA-Z0-9]*`.
 You will, however, have to check that the string does not match any of
