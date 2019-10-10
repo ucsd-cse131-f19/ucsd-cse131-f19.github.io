@@ -74,9 +74,10 @@ assignments are due Wednesday. Please check the calendar before you come in
 case there have been any changes. When you come to the office hour, we may
 ask you to put your name in the queue using the whiteboard. Read the
 description about [collaboration below](#policies) for some context about office
-hours. (Joe will set his office hours by the end of the first week).
+hours.
 
 <iframe src="https://calendar.google.com/calendar/embed?src=eng.ucsd.edu_qie58tivkeduh90ap8kgje90ik%40group.calendar.google.com&ctz=America%2FLos_Angeles" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
 
 ### Useful Resources
 
