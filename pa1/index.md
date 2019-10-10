@@ -460,3 +460,93 @@ re-fetched from memory. How could you change the compiler to avoid these?
 - In Scheme and Racket, the `+` operator takes any number of arguments, so
 `(+ 1 2 3)` evaluates to 6. Extend your implementation of operators to allow
 for these arbitrary-arity cases.
+
+**FAQ F2019**
+
+**How to write tests for parse?**
+`t_parse` and `t_parse_error` functions are provided in `test.ml`, which you can use to write your own tests for parser.
+
+An example of a parse test is
+
+```
+  let myTestList =
+    [ (* Fill in your tests here: *)
+      t_parse "example" "1" (ENumber(1));
+    ]
+  ;;
+```
+
+To make this test pass, you would add code to `parser.ml` to handle the `Atom` case, similar to how our parser in class worked.
+
+**What should `(let ((x 5) (z x)) z)` produce?**
+
+From the PA writeup: “Let bindings should evaluate all the binding expressions to values one by one, and after each, store a mapping from the given name to the corresponding value in both (a) the rest of the bindings, and (b) the body of the let expression. Identifiers evaluate to whatever their current stored value is.”
+
+**Are the let bindings from class valid anaconda programs, or do anaconda programs always have the extra parentheses around the bindings?**
+
+In Anaconda, there's always the extra set of parens around the list.
+
+**I get an error that says "Error: Signalled -10 when running output/file"**
+
+That's typically a segmentation fault. See the discussion podcast from 10-04 for some suggestions on debugging.
+
+[https://podcast.ucsd.edu/watch/fa19/cse131_a00/21/screen](https://podcast.ucsd.edu/watch/fa19/cse131_a00/21/screen)
+
+**I get an error like `"ocamlfind: Package sexplib not found"` when I run `make` on my laptop**
+
+Try running `opam install sexplib` to make sure you have the package installed.
+
+**Can we write additional helper functions?**
+
+Yes.
+
+
+**Do we care about the text return from failwith?**
+
+Absolutely. Any time you write software you should strive to write thoughtful error messages. They will help you while debugging, you when you make a mistake coming back to your code later, and anyone else who uses your code.
+
+As for the autograder, we expect you to catch parsing and compilation errors. For parsing errors you should `failwith` an error message containing the word `Invalid`. For compilation errors, you should catch duplicate binding and unbound variable identifier errors and `failwith` `Duplicate binding` and `Unbound variable identifier {identifier}` respectively. We've also added these instructions to the PA writeup.
+
+**How should we check that identifiers are valid according to the description in the writeup?**
+
+From the PA writeup: “You can **assume** that an id is a valid string of form `[a-zA-z][a-zA-Z0-9]*`. You will, however, ...”
+
+**Assume** means that we're not expecting you to check this for the purposes of the assignment (though you're welcome to if you like).
+
+**What should the program "()" compile to?**
+
+Is `()` an anaconda program (does it match the grammar)? What should the compiler do with a program that doesn't match the grammar?
+
+**What does "and" mean in Ocaml?**
+
+A construction like
+
+```
+let rec f ... = ...
+and g ... = ....
+```
+
+allows `f` and `g` to be mutually recursive (if they were separate `let rec`s, `g` could refer to `f` but not vice versa.)
+
+**What does the writeup mean when it says that duplicate bindings should be an error? Does that mean each variable can only be defined once?**
+
+Consider this Ocaml example, which is directly analogous to the design described for anaconda:
+
+```
+# let x = 10 in let x = x + 1 in x;;
+- : int = 11
+# let x = 10 and x = x + 1 in x;;
+Error: Variable x is bound several times in this matching
+```
+
+**I wrote out some expected output like `(ELet([("x", ENumber(10)), ("y", ENumber(7))], EPrim2(Times, EPrim2(Minus, EId("x"), EId("y")), ENumber(2))))` and Ocaml is giving me a type error that is hard to make sense of.**
+
+Remember that `;` (semicolon) separates list items and `,` (comma) separates tuple elements.
+
+**What's the best way to test? What is test case <some-test-name-from-autograder> testing?**
+
+A few suggestions:
+
+- First, make sure to test all the different expressions as a baseline
+- Then, look at the grammar. There are lots of places where `<expr>` appears. In each of those positions, _any other expression_ could appear. So `let` can appear inside `+` and vice versa, and in the binding position of let, and so on. Make sure you've tested enough _nested expressions_ to be confident that each expression works no matter the context
+- Names of variables are interesting – the names can appear in different places and have different meanings depending on the structure of let. Make sure that you've tried different combinations of `let` naming and uses of variables.
