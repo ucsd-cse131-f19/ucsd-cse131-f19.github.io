@@ -330,27 +330,53 @@ And if there were a _nested_ if expression, it might have labels like
     ambiguous.  This could happen if you write, for example:
 
     ```
-    cmp [ebp-8], 0
+    cmp [rbp-8], 0
     ```
 
-    Because the assembler doesn't know if the program should move a four-byte
+    Because the assembler doesn't know if the program should move an eight-byte
     zero, a one-byte zero, or something in between into memory starting at
-    `[ebp-8]`.  To solve this, you can supply a size:
+    `[rbp-8]`.  To solve this, you can supply a size:
 
     ```
-    cmp [ebp-8], DWORD 0
+    cmp [rbp-8], DWORD 0
     ```
 
     This tells the assembler to use the “double word” size for 0, which
-    corresponds to 32 bits.  A `WORD` corresponds to 16 bits, and a `BYTE`
-    corresponds to 16 bits.  To get a sized argument, you can use the `Sized`
-    constructor from `arg`.
+    corresponds to 64 bits (there are other sizes; for now we'll typically
+    work in 64-bit-sized chunks). To get a sized argument, you can use the
+    `Sized` constructor from `arg`.
 
-- `HexConst`
+- `Const64`
+
+    Just like Boa, OCaml uses 63-bit integers with a tag bit for its default
+    `int` type. This means that OCaml can't represent 64-bit constants like
+    our representation of `-1` or `2^62-1` when they are encoded. OCaml does
+    support 64-bit integers, though, with its [`int64`
+    type](https://caml.inria.fr/pub/docs/manual-ocaml/libref/Int64.html)
+    (just like C has different-sized numbers). `Const64` takes one of these
+    so that you can represent the big constants we need in an instruction
+
+    In Boa, the main place you'll likely need this is in `ENumber`, and other
+    than that you won't need to construct such large numbers in OCaml.
+
+    An example that compares `Int64` to regular `int` is:
+
+    ```
+    # Int64.mul (Int64.of_int 4611686018427387903) (Int64.of_int 2);;
+    - : int64 = 9223372036854775806L
+    # 4611686018427387903 * 2;;
+    - : int = -2
+    ```
+
+    An example of constructing a `Const64` is:
+
+    `Const64(Int64.mul (Int64.of_int 4611686018427387903) (Int64.of_int 2)))`
+
+- `HexConst64`
 
     Sometimes it's nice to read things in hex notation as opposed to decimal
-    constants.  I've provided a new `HexConst` `arg` that's useful for this
-    case.
+    constants. This is like `Const64` but prints its value in hex notation
+    instead of decimal.
 
 - `IPush`, `IPop`
 
@@ -367,7 +393,7 @@ And if there were a _nested_ if expression, it might have labels like
         which becomes the return pointer
       - Performs an unconditional `jmp` to the provided label
 
-    `call` does not affect `ebp`, which the program must maintain on its own.
+    `call` does not affect `rbp`, which the program must maintain on its own.
 
 - `IShr`, `ISar`, `IShl`: Bit shifting operations
 
