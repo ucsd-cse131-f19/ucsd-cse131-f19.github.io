@@ -156,7 +156,7 @@ For example, `./output/somefile.run 9999999999999999` prints error `input is not
 #### The check function
 
 Production compilers typically separate checking from code generation rather
-than interleaving them (as we did in Anaconda). To suppor this, Boa's
+than interleaving them (as we did in Anaconda). To support this, Boa's
 implementation comes with a function, `check`, whose purpose is to check your
 program before compilation. `check` should to return a list of strings
 containing an exact series of error messages. We will be testing against this
@@ -168,9 +168,9 @@ The errors you will need to check here are:
 
   Error string = "Variable identifier {id name} unbound"
 
-- Multiple Bindings ie. `ELet([("x", ENumber(2)); ("y", ENumber(5)); ("x", ENumber(5))], EId(x))`
+- Multiple bindings in the same let binding list: `ELet([("x", ENumber(2)); ("y", ENumber(5)); ("x", ENumber(5))], EId(x))`
 
-  Error string =  " Multiple bindings for variable identifier {id name}"
+  Error string =  "Multiple bindings for variable identifier {id name}"
 
 Note that once an error is found, it should be added to the return string list and check
 should still continue to find any other errors.
@@ -213,15 +213,16 @@ example, you might insert code like:
 ```
 internal_error_non_number:
   mov rdi, rax
+  push 0
   call error_non_number
 ```
 
 Which will store the value in `rax` in `rdi` (the register for the first
-argument), move `rsp` appropriately, and perform a jump into
+argument), move `rsp` appropriately (see the Oct 10 lecture for some discussion of stack alignment), and perform a jump into
 `error_non_number` function, which you will write in `main.c` as a function
 of one argument. If you look closely you may notice that we aren't updating
 RSP for our local vars, but we still call another function. This overwrites
-the callee's stack space but isn't observable by our programs, since we exit
+our program's stack space but isn't observable by our programs, since we exit
 after printing errors. Future PAs will fix this hack.
 
 ## Implementing Boa
@@ -380,10 +381,7 @@ And if there were a _nested_ if expression, it might have labels like
 
 - `IPush`, `IPop`
 
-    These two instructions manage values on the stack.  `push` adds a value at
-    the current location of `rsp`, and increments `rsp` to point past the
-    added value.  `pop` decrements `rsp` and moves the value at the location
-    `rsp` was pointing to into the provided arg.
+    These two instructions manage values on the stack.  `push` decrements `rsp` by 8 and sets the given value at updated address in `rsp`.  `pop` retrieves the value at `rsp` into the given register and increments `rsp` by 8.
 
 - `ICall`
 
@@ -392,8 +390,6 @@ And if there were a _nested_ if expression, it might have labels like
       - Pushes the next _code_ location onto the stack (just like a `push`),
         which becomes the return pointer
       - Performs an unconditional `jmp` to the provided label
-
-    `call` does not affect `rbp`, which the program must maintain on its own.
 
 - `IShr`, `ISar`, `IShl`: Bit shifting operations
 
