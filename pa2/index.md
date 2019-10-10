@@ -6,7 +6,7 @@ doodle: "https://animalcorner.co.uk/wp-content/uploads/2015/02/boa-constrictor-1
 
 # PA2 Boa, Due Wednesday 10/16/2019 (Open Collaboration)
 
-[Get your repo here](https://classroom.github.com/a/wxBu1ENM)
+[Github Classroom](https://classroom.github.com/a/wxBu1ENM) - [Direct Github](https://github.com/ucsd-cse131-f19/pa2-student)
 
 In this assignment you'll implement a small language called Boa, which
 implementes a Bitwise Offset Arrangement of different values. It also uses C function calls to implement
