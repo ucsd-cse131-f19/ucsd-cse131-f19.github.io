@@ -118,7 +118,7 @@ If integers exceed the range of representable values, two types of errors must b
 
     For example, the following Boa program 
     ```
-    4611686018427387903 + 10
+    (+ 4611686018427387903 10)
     ```
     should throw `overflow` at runtime.
 
