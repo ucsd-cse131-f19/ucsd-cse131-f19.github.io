@@ -110,9 +110,9 @@ If integers exceed the range of representable values, two types of errors must b
 
     For example, the following Boa program
     ```
-    9999999999999999
+    9999999999999999999999999999
     ```
-    should throw `Non-representable number 9999999999999999` before compilation.
+    should throw `Non-representable number 9999999999999999999999999999` before compilation.
 
 - Runtime overflow error
 
