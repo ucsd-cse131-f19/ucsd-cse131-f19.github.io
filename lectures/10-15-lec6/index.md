@@ -487,3 +487,4 @@ wanted to store the result in a variable, what would its type have to be?
 - In PA2, there's a variable called `input` that holds a command-line
 argument. What challenges would implementing `input` in the type checker
 introduce?
+- How would you use `calc_typ` in the overall infrastructure of the compiler?
