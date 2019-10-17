@@ -112,8 +112,8 @@ Your grade will be calculated from:
   - PA0 **open collab** (warmup): 2%
   - PA1 **closed collab** (let and arithmetic): 4%
   - PA2 **open collab** (tagged values): 4%
-  - PA3 **closed collab** (functions): 8%
-  - PA4 **open collab** (types): 6%
+  - PA3 **open collab** (types): 6%
+  - PA4 **closed collab** (functions): 8%
   - PA5 **open collab** (using heap allocated data): 6%
   - PA6 **closed collab** (implementing heap alloc): 8%
   - PA7 **open collab** (garbage collection): 6%
