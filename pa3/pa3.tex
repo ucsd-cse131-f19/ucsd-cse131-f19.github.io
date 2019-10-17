@@ -1,0 +1,228 @@
+
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{url,hyperref}
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- Copperhead}
+
+\usepackage{listings}
+\pagestyle{empty}
+\setlength{\parindent}{0em}
+\begin{document}
+\maketitle 
+
+{\bf Due Date:} 11pm Wednesday, October 23
+
+You will implement Copperhead, a language like Boa extended with a static type
+system, variables, and while loops.
+
+Classroom: \url{https://classroom.github.com/a/y0UCOlDY} \hspace{2em} Github: \url{http://github.com/ucsd-cse131-f19/pa3-student}
+
+
+\subsection*{Syntax}
+
+The concrete syntax and type language for Copperhead is below. We use $\cdots$ to
+indicate \textit{one or more} of the previous element. So a while expression has at
+least two sub-expressions, and a let expression at least one binding and body
+expression.
+
+\[
+\begin{array}{ll}
+\begin{array}{lrl}
+e & := & n \mid \texttt{true} \mid \texttt{false} \\
+  & \mid  & \texttt{(let (($x\ e$) $\cdots$) $e \cdots$)} \\
+  & \mid  & \texttt{(if $e\ e \ e$)} \\
+  & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
+  & \mid  & \texttt{(while $e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
+op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \\
+op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \\
+n & := & \textrm{63-bit signed number literals} \\
+x & := & \textrm{variable names} \\
+\end{array}
+&
+\begin{array}{lrl}
+\tau & := & \textsf{Num} \mid \textsf{Bool} \\
+\Gamma & := & \{x:\tau,\cdots\} \\
+\Gamma[x] & \textit{means} & \textit{look up the type of } x \textit{ in } \Gamma \\
+(x,\tau)::\Gamma & \textit{means} & \textit{add } x \textit{ to } \Gamma \textit{ with type } \tau \\
+\Gamma \vdash e : \tau & \textit{means} & \textit{in environment } \Gamma, e \textit{ has type } \tau \\
+\end{array}
+\end{array}
+\]
+
+\subsection*{Semantics}
+
+The behavior of the existing forms is largely same as in Boa, with a few
+modifications:
+
+\begin{itemize}
+\item \texttt{let} expressions in Copperhead can have multiple body
+expressions. These expressions should be evaluated in order, and the result
+of the let expression is the result of the last expression in the body.
+\item The {\bf static type checker} for Copperhead eliminates the need to check
+tags of operands to binary operators like \texttt{+}. Overflow is
+checked and reported at runtime as in Boa.
+\item The built-in variable \texttt{input} must always be a number. If a user
+gives a non-number value, the runtime should report a dynamic error that
+includes the string \texttt{"input must be a number"}.
+\end{itemize}
+
+The existing static errors (duplicate bindings and unbound identifiers)
+should be reported as in Boa.
+
+There are two new expressions in Copperhead, as well:
+
+\begin{itemize}
+
+\item \texttt{set} expressions update the value of a variable. The behavior
+of a \texttt{set} expression is to evaluate its subexpression, then set the
+value of the named variable to the result of that subexpression. The result
+of the entire \texttt{set} expression is the new value, and its effect is to
+make future accesses of that variable get the updated value.
+
+\item \texttt{while} expressions evaluate a condition and body repeatedly.
+The condition expression is the first one that appears in the while
+expression -- it should evaluate to a boolean (the type checker will enforce
+this), and if it evaluates to \texttt{true} the body expressions evaluate in
+order. This process is repeated until the condition evaluates to
+\texttt{false}, the body is not executed, and the entire \texttt{while}
+expression evaluates to \texttt{false}.
+
+\end{itemize}
+
+\subsection*{Type Checking}
+
+Copperhead has the typing rules shown in figure 1. If an expression cannot be
+typed according to these rules, the compiler should report a static error
+containing \texttt{"Type mismatch"}. A few rules benefit from some extra
+explanation:
+
+\begin{itemize}
+
+\item E-Sequence describes type-checking a sequence of expressions, as found
+in the body of while and let expressions. To type-check a sequence, all the
+expressions must type to \emph{some} type, though they can be different
+across expressions. The type of the entire sequence is the type of the
+\emph{last} expression, $\tau_n$.
+
+\item E-LetBindings describes type-checking of let expressions with multiple
+bindings in terms of one binding at a time. Since the first binding is
+visible in the second, the second in the third, and so on, this rule proceeds
+one binding at a time. There is a separate rule, E-Let-One, to handle the
+case of a single binding.\footnote{You may find the implied binding-at-a-time
+matching useful as a suggestion of an implementation strategy.}
+
+
+
+\end{itemize}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[Left=TR-Num]{}{\qquad n : \textsf{Num}}
+\and \and
+\inferrule*[Left=TR-True]{}{\qquad \texttt{true} : \textsf{Bool}}
+\and \and
+\inferrule*[Left=TR-False]{}{\qquad \texttt{true} : \textsf{Bool}}
+\\
+\inferrule*[Left=TR-Plus]
+{\Gamma \vdash e_1 : \textsf{Num} \and \Gamma \vdash e_2 : \textsf{Num}}
+{\Gamma \vdash \texttt{(+ $e_1\ e_2$)} : \textsf{Num}}
+\and
+\inferrule*[Left=TR-Minus]
+{\Gamma \vdash e_1 : \textsf{Num} \and \Gamma \vdash e_2 : \textsf{Num}}
+{\Gamma \vdash \texttt{(- $e_1\ e_2$)} : \textsf{Num}}
+\\
+\inferrule*[Left=TR-Times]
+{\Gamma \vdash e_1 : \textsf{Num} \and \Gamma \vdash e_2 : \textsf{Num}}
+{\Gamma \vdash \texttt{(* $e_1\ e_2$)} : \textsf{Num}}
+\\
+\inferrule*[Left=TR-Add1]
+{\Gamma \vdash e : \textsf{Num}}
+{\Gamma \vdash \texttt{(add1 $e$)} : \textsf{Num}}
+\and
+\inferrule*[Left=TR-Sub1]
+{\Gamma \vdash e : \textsf{Num}}
+{\Gamma \vdash \texttt{(sub1 $e$)} : \textsf{Num}}
+\\
+\inferrule*[Left=TR-IsBool]
+{\Gamma \vdash e : \tau}
+{\Gamma \vdash \texttt{(isBool $e$)} : \textsf{Bool}}
+\and
+\inferrule*[Left=TR-IsNum]
+{\Gamma \vdash e : \tau}
+{\Gamma \vdash \texttt{(isNum $e$)} : \textsf{Bool}}
+\\
+\inferrule*[Left=TR-Less]
+{\Gamma \vdash e_1 : \textsf{Num} \and \Gamma \vdash e_2 : \textsf{Num}}
+{\Gamma \vdash \texttt{(< $e_1\ e_2$)} : \textsf{Bool}}
+\and
+\inferrule*[Left=TR-Greater]
+{\Gamma \vdash e_1 : \textsf{Num} \and \Gamma \vdash e_2 : \textsf{Num}}
+{\Gamma \vdash \texttt{(> $e_1\ e_2$)} : \textsf{Bool}}
+\\
+\inferrule*[Left=TR-Equals]
+{\Gamma \vdash e_1 : \tau_1 \and \Gamma \vdash e_2 : \tau_2}
+{\Gamma \vdash \texttt{(== $e_1\ e_2$)} : \textsf{Bool}}
+\\
+\inferrule*[Left=TR-Id]{\Gamma[x] = \tau}{\Gamma \vdash x : \tau}
+\and
+\inferrule*[Left=TR-Let-One]
+{\Gamma \vdash e_1 : \tau_1 \and (x,\tau)::\Gamma \vdash e_b \cdots : \tau}
+{\Gamma \vdash \texttt{(let (($x\ e_1$)) $e_b \cdots$)} : \tau}
+\\
+\inferrule*[Left=TR-Let-Bindings]
+{\Gamma \vdash e_1 : \tau_1 \and (x_1,\tau)::\Gamma \vdash \texttt{(let (($x_2\ e_2$) $\cdots$) $e_b$)} : \tau}
+{\Gamma \vdash \texttt{(let (($x_1\ e_1$) ($x_2$ $e_2$) $\cdots$) $e_b \cdots$)} : \tau}
+\\
+\inferrule*[Left=TR-Sequence]
+{\Gamma \vdash e_1 : \tau_1 \cdots \Gamma \vdash e_n : \tau_n}
+{\Gamma \vdash e_1 \cdots e_n : \tau_n}
+\and
+\inferrule*[Left=TR-Set]
+{\Gamma \vdash e : \tau}
+{\Gamma \vdash \texttt{(set $x\ e$)}: \tau}
+\\
+\inferrule*[Left=TR-If]{\Gamma \vdash e_1 : \textsf{Bool} \\ \Gamma \vdash e_2 : \tau \\ \Gamma \vdash e_3 : \tau}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau}
+\and
+\inferrule*[Left=TR-While]
+{\Gamma \vdash e_1 : \textsf{Bool} \\ \Gamma \vdash e_2 \cdots : \tau}
+{\Gamma \vdash \texttt{(while $e_1\ e_2 \cdots$)} : \textsf{Bool}}
+\end{mathpar}
+\caption{Figure 1: Typing rules for Copperhead}
+\end{figure}
+
+
+\subsection*{Extensions}
+
+These are optional and not for credit, but are interesting to try and discuss
+in office hours or with your peers:
+
+\begin{enumerate}
+
+\item Modify the compiler to use type information in code generation to
+dramatically simplify the compilation of \texttt{isNum} and \texttt{isBool}.
+
+\item Add a new type to the definition of \texttt{typ} called
+\texttt{NumOrBool}, and enable booleans as \texttt{input}. Write a type rule
+for each of the following cases that exploits the behavior of \texttt{isNum}
+and \texttt{isBool} and your knowledge of control flow to make them
+type-check safely:
+
+\texttt{(if (isNum input) (< input 1) input)}
+
+\texttt{(if (isBool input) (if input 10 5) (+ input 10))}
+
+Check that your solution works in general for any identifier that has type
+\texttt{NumOrBool}. Implement a less restrictive version of \texttt{if} that
+allows differing types across the then and else branches.
+
+\end{enumerate}
+
+
+
+\end{document}
