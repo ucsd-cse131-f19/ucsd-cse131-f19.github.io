@@ -16,12 +16,12 @@
 \begin{document}
 \maketitle 
 
-{\bf Due Date:} 11pm Wednesday, October 23
+{\bf Due Date:} 11pm Wednesday, October 23 \hspace{2em} {\bf Open to Collaboration}
 
 You will implement Copperhead, a language like Boa extended with a static type
 system, variables, and while loops.
 
-Classroom: \url{https://classroom.github.com/a/y0UCOlDY} \hspace{2em} Github: \url{http://github.com/ucsd-cse131-f19/pa3-student}
+Classroom: \url{https://classroom.github.com/a/y0UCOlDY} \hspace{1em} Github: \url{http://github.com/ucsd-cse131-f19/pa3-student}
 
 
 \subsection*{Syntax}
@@ -104,16 +104,16 @@ explanation:
 
 \begin{itemize}
 
-\item E-Sequence describes type-checking a sequence of expressions, as found
+\item TR-Sequence describes type-checking a sequence of expressions, as found
 in the body of while and let expressions. To type-check a sequence, all the
 expressions must type to \emph{some} type, though they can be different
 across expressions. The type of the entire sequence is the type of the
 \emph{last} expression, $\tau_n$.
 
-\item E-LetBindings describes type-checking of let expressions with multiple
+\item TR-LetBindings describes type-checking of let expressions with multiple
 bindings in terms of one binding at a time. Since the first binding is
 visible in the second, the second in the third, and so on, this rule proceeds
-one binding at a time. There is a separate rule, E-Let-One, to handle the
+one binding at a time. There is a separate rule, TR-Let-One, to handle the
 case of a single binding.\footnote{You may find the implied binding-at-a-time
 matching useful as a suggestion of an implementation strategy.}
 
@@ -184,7 +184,7 @@ matching useful as a suggestion of an implementation strategy.}
 {\Gamma \vdash e_1 \cdots e_n : \tau_n}
 \and
 \inferrule*[Left=TR-Set]
-{\Gamma \vdash e : \tau}
+{\Gamma \vdash e : \tau \and \Gamma[x] = \tau}
 {\Gamma \vdash \texttt{(set $x\ e$)}: \tau}
 \\
 \inferrule*[Left=TR-If]{\Gamma \vdash e_1 : \textsf{Bool} \\ \Gamma \vdash e_2 : \tau \\ \Gamma \vdash e_3 : \tau}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau}
