@@ -87,7 +87,7 @@ make future accesses of that variable get the updated value.
 
 \item \texttt{while} expressions evaluate a condition and body repeatedly.
 The condition expression is the first one that appears in the while
-expression -- it should evaluate to a boolean (the type checker will enforce
+expression -- it should evaluate to a boolean (the type rules below enforce
 this), and if it evaluates to \texttt{true} the body expressions evaluate in
 order. This process is repeated until the condition evaluates to
 \texttt{false}, the body is not executed, and the entire \texttt{while}
