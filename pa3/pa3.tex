@@ -172,7 +172,7 @@ matching useful as a suggestion of an implementation strategy.}
 \inferrule*[Left=TR-Id]{\Gamma[x] = \tau}{\Gamma \vdash x : \tau}
 \and
 \inferrule*[Left=TR-Let-One]
-{\Gamma \vdash e_1 : \tau_1 \and (x,\tau)::\Gamma \vdash e_b \cdots : \tau}
+{\Gamma \vdash e_1 : \tau_1 \and (x,\tau_1)::\Gamma \vdash e_b \cdots : \tau}
 {\Gamma \vdash \texttt{(let (($x\ e_1$)) $e_b \cdots$)} : \tau}
 \\
 \inferrule*[Left=TR-Let-Bindings]
