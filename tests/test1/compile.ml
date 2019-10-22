@@ -91,13 +91,10 @@ let rec e_to_is (e : expr) (si : int) (env : tenv) =
       let fin_lbl = gen_tmp "or_end" in
       let e1_is = e_to_is e1 si env in
       let store_e1 = (sprintf "mov [rsp-%d], rax" (stackloc si)) in
-      let restore_e1 = (sprintf "mov rax, [rsp-%d]" (stackloc si)) in
       let e2_is = e_to_is e2 si env in
       e1_is @ [store_e1] @
       ["cmp rax, 1"; sprintf "jne %s" fin_lbl] @ 
-      e2_is @
-      ["cmp rax, 1"; sprintf "jne %s" fin_lbl] @ 
-      [restore_e1; fin_lbl ^ ":"]
+      e2_is @ [fin_lbl ^ ":"]
     | EAnd(e1, e2) ->
       let fin_lbl = gen_tmp "and_end" in
       let e1_is = e_to_is e1 si env in
