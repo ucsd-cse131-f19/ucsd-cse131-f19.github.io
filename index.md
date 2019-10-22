@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Compiler Construction – CSE 131 S18"
+title: "Compiler Construction – CSE 131 F19"
 doodle: "/doodle.png"
 ---
 
