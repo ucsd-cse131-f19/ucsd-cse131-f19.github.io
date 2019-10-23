@@ -103,7 +103,7 @@ let compile (program : string) : string =
   let ast = parse program in
   let instrs = e_to_is ast 1 [] in 
   let instrs_str = (String.concat "\n" instrs) in
-  (* The `push 0` below is to make sure that `rsp` ends up 8-byte aligned.
+  (* The `push 0` below is to make sure that `rsp` ends up 16-byte aligned.
      It is a total hack that we will improve when we talk about calling
      conventions in more detail. *)
   sprintf "
