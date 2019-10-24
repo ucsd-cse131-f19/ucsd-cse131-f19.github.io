@@ -1,0 +1,93 @@
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\usepackage{listings}
+\pagestyle{empty}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1.3em}
+\begin{document}
+\begin{flushright}
+\StrBefore{\currfilename}{.}
+\end{flushright}
+
+\[
+\begin{array}{ll}
+\begin{array}{lrl}
+e & := & n \mid \texttt{true} \mid \texttt{false} \\
+  & \mid  & \texttt{(let ($x\ e$) $e$)} \\
+  & \mid  & \texttt{(+ $e\ e$)} \mid \texttt{(< $e\ e$)} \\
+  & \mid  & \texttt{(if $e\ e\ e$)} \\
+\end{array}
+&
+\begin{array}{lrl}
+n & := & \textrm{number literals} \\
+x & := & \textrm{variable names} \\
+\tau & := & \textsf{Num} \mid \textsf{Bool} \\
+\Gamma & := & \{x:\tau,\cdots\}
+\end{array}
+\end{array}
+\]
+
+
+\vspace{8em}
+
+\begin{mathpar}
+\inferrule*[Left=TR-Num]{}{\qquad n : \textsf{Num}}
+\and \and
+\inferrule*[Left=TR-True]{}{\qquad \texttt{true} : \textsf{Bool}}
+\and \and
+\inferrule*[Left=TR-False]{}{\qquad \texttt{true} : \textsf{Bool}}
+\end{mathpar}
+
+\vfill
+
+\begin{mathpar}
+\inferrule*[Left=TR-Plus]{\framebox(200,40){}}{\qquad\qquad \texttt{(+ $e_1\ e_2$)} : \framebox(40,20){}}
+\and
+\inferrule*[Left=TR-Less]{\framebox(200,40){}}{\qquad\qquad \texttt{(< $e_1\ e_2$)} : \framebox(40,20){}}
+\end{mathpar}
+
+\vfill
+
+\newpage
+
+\mbox{}
+
+\vfill
+
+\begin{mathpar}
+\inferrule*[Left=TR-Id]{\framebox(100,40){}}{\Gamma \vdash x : \framebox(40,20){}}
+\and
+\inferrule*[Left=TR-Let]{\framebox(250,40){}}{\Gamma \vdash \texttt{(let ($x\ e_1$) $e_2$)} : \framebox(40,20){}}
+\end{mathpar}
+
+\vfill
+
+\begin{mathpar}
+\inferrule*[Left=TR-IfA]{\Gamma \vdash e_1 : \tau_1 \\ \Gamma \vdash e_2 : \tau_2 \\ \Gamma \vdash e_3 : \tau_3}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau_1}
+\and
+\inferrule*[Left=TR-IfB]{\Gamma \vdash e_1 : \textsf{Bool} \\ \Gamma \vdash e_2 : \tau_2 \\ \Gamma \vdash e_3 : \tau_3}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau_2}
+\\
+\inferrule*[Left=TR-IfC]{\Gamma \vdash e_1 : \textsf{Bool} \\ \Gamma \vdash e_2 : \tau_2 \\ \Gamma \vdash e_3 : \tau_3}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau_3}
+\and
+\inferrule*[Left=TR-IfD]{\Gamma \vdash e_1 : \tau_1 \\ \Gamma \vdash e_2 : \tau_2 \\ \Gamma \vdash e_3 : \tau_3}{\Gamma \vdash \texttt{(if $e_1\ e_2\ e_3$)} : \tau_2}
+\\
+\textrm{TR-IfE: None of the above}
+\end{mathpar}
+
+\vfill
+
+\newpage
+
+\begin{mathpar}
+\inferrule*[Left=TR-Set]
+{\Gamma \vdash e : \tau_1 \and \Gamma[x] = \tau_2}
+{\Gamma \vdash \texttt{(set $x\ e$)}: \tau_2}
+\end{mathpar}
+
+\end{document}
