@@ -16,3 +16,5 @@ _site/
 *.synctex.gz
 *.out
 *.fdb_latexmk
+*.s
+*.run
