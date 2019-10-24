@@ -1,0 +1,292 @@
+
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{url,hyperref}
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- Diamondback}
+
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape,
+  columns=fullflexible
+}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+\begin{document}
+\maketitle 
+
+{\bf Due Date:} 11pm Wednesday, November 6 \hspace{2em} {\bf Closed to Collaboration}
+
+You will implement Diamondback, a language with functions and a static type
+system.
+
+Classroom: \url{FILL} \hspace{1em} Github: \url{FILL}
+
+
+\section*{Syntax}
+
+The concrete syntax and type language for Diamondback is below. We use
+$\cdots$ to indicate \textit{one or more} of the previous element. So a
+program $p$ is a sequence of one or more definitions $d$ followed by an
+expression $e$, and a definition has one or more arguments $x \texttt{:}\tau$
+and one or more expressions in its body $e \cdots$. There are \fbox{boxes}
+around the new pieces of syntax.
+
+\[
+\begin{array}{ll}
+\begin{array}{lrl}
+e & := & n \mid \texttt{true} \mid \texttt{false} \mid x \\
+  & \mid  & \texttt{(let (($x\ e$) $\cdots$) $e \cdots$)} \\
+  & \mid  & \texttt{(if $e\ e \ e$)} \\
+  & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
+  & \mid  & \texttt{(while $e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
+  & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \\
+d & := & \fbox{\texttt{(def $f$ ($x$:$\tau \cdots$):$\tau$ $e \cdots$)}} \\
+p & := & \fbox{$d \cdots e$} \\
+op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \mid \fbox{\texttt{print}} \\
+op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \\
+n & := & \textrm{63-bit signed number literals} \\
+x,f & := & \textrm{variable and function names} \\
+\end{array}
+&
+\begin{array}{lrl}
+\tau & := & \texttt{Num} \mid \texttt{Bool} \\
+\Delta & := & \{f: \tau \cdots \rightarrow \tau, \cdots\} \\
+\Delta[f] & \textit{means} & \textit{look up the type of } f \textit{ in } \Delta \\
+\Gamma & := & \{x:\tau,\cdots\} \\
+\Gamma[x] & \textit{means} & \textit{look up the type of } x \textit{ in } \Gamma \\
+(x,\tau)::\Gamma & \textit{means} & \textit{add } x \textit{ to } \Gamma \textit{ with type } \tau \\
+\Delta;\Gamma \vdash e : \tau & \textit{means} & \textit{with definitions } \Delta \textit{ and env } \Gamma, e \textit{ has type } \tau \\
+\Delta \vdash_d d : \checkmark & \textit{means} & \textit{with definitions } \Delta \textit{ the definition } d \textit{ type-checks} \\
+\vdash_p p : \checkmark & \textit{means} & \textit{the program } p \textit{ type checks } \\
+\end{array}
+\end{array}
+\]
+
+\section*{Semantics}
+
+\subsection*{Function Definitions and Applications}
+
+The main new feature in Diamondback is function definitions $d$ and function
+applications $\texttt{($f\ e\cdots$)}$. A function application $\texttt{($f\
+e_a\cdots$)}$ uses the function definition with the matching name
+$\texttt{(def $f$ ($x$ :$\tau \cdots$) $e \cdots$)}$, and should evaluate to
+the same result as $\texttt{(let (($x\ e_b$) $\cdots$) $e \cdots$)}$, where
+the argument expressions $e_a\cdots$ come from the application, the names
+$x\cdots$ come from the definition, and the body expressions $e_b\cdots$ come
+from the definition.\footnote{Note that replacing application expressions
+with let expressions is \emph{not} a strategy that works in general in the
+compiler, because the body expressions $e_b\cdots$ could contain other
+function applications. This description is, however, a useful way to describe
+the behavior of a function application succinctly and is a perfectly valid
+way to evaluate functions ``by hand'' when we can write out all the
+intermediate steps with concrete values. See the reading for more detail:
+\url{https://ucsd-cse131-f19.github.io/lectures/10-22-lec8/notes.pdf}}\footnote{We
+actually need to be a little bit careful here. While this rule worked fine
+for the single-argument functions in the reading, here we'd really want a
+version of let that doesn't include earlier bindings in later ones to avoid
+clashes between names in scope and names in the function's argument list.
+This is really only relevant if you're writing things out on paper, and
+doesn't affect the design of a calling convention at all.}
+
+\subsection*{The Main Expression}
+
+Diamondback programs are expected to have a single expression after the
+definition list that is the main entry point for the program. This expression
+has {\tt input} bound to the user's input by default.
+
+As an example, consider this program:
+
+\begin{lstlisting}
+(def (abs x : Num) : Num
+  (if (< x 0) (* -1 x) x))
+(* (abs input) 2)
+\end{lstlisting}
+
+We could think of its evaluation taking these steps (with an input of 5):
+
+\begin{lstlisting}
+$\rightarrow$ (* (abs input) 2)
+$\rightarrow$ (* (abs 5) 2)
+$\rightarrow$ (* (let ((x 5)) (if (< x 0) (* -1 x) x)) 2)
+$\rightarrow$ (* (if (< 5 0) (* -1 5) 5) 2)
+$\rightarrow$ (* (if false (* -1 5) 5) 2)
+$\rightarrow$ (* 5 2)
+$\rightarrow$ 10
+\end{lstlisting}
+
+\subsection*{Printing}
+
+Diamondback also adds a new primitive, {\tt print}, that prints a value to
+the console followed by a newline. Numbers should print as their
+user-interpreted value, so {\tt (print 22)} should print {\tt 22}, not its
+representation, and {\tt (print true)} should print {\tt true}.
+
+The entire {\tt print} expression evaluates to the same value as its argument
+(which is the value that gets printed), so {\tt (print (+ 1 7))} evaluates to
+{\tt 8} in addition to printing it.
+
+\section*{Type Checking}
+
+Diamondback has essentially the same type rules as Copperhead for
+expressions, with two changes. First, all of the rules contain a definitions
+environment $\Delta$ in addition to the type environment $\Gamma$. Second,
+there are two new rules:
+
+\begin{mathpar}
+\inferrule*[Left=TR-Print]
+{\Gamma \vdash e : \tau}
+{\Delta;\Gamma \vdash \texttt{(print $e$)} : \tau}
+\and
+\inferrule*[Left=TR-App]
+{\Delta[f] = \tau_1 \cdots \tau_n \rightarrow \tau_r \and \left(\Delta;\Gamma \vdash e_1 : \tau_1 \right) \cdots \left(\Delta;\Gamma \vdash e_n : \tau_n \right)}
+{\Delta;\Gamma \vdash \texttt{($f$ $e_1 \cdots e_n$)} : \tau_r}
+\end{mathpar}
+
+TR-Print says that {\tt print} expressions' result is the same type $\tau$ as
+the argument, which matches the semantics.
+
+In English, TR-App rule says
+
+\begin{quote}
+If the function definition $f$ has argument types $\tau_1 \cdots$ and return type $\tau_r$, and the
+arguments $e_1\cdots$ of an application of $f$ have matching types with
+definitions $\Delta$ and environment $\Gamma$, then the application has type $\tau_r$.
+\end{quote}
+
+It's common to write the type of definitions as $\tau_1 \cdots \rightarrow
+\tau_r$, also called an ``arrow type'', to be evocative of taking a number of
+argument types and producing a result type.
+
+The existing rules are unchanged aside from tracking $\Delta$ (which only
+TR-App uses).
+
+There are also two new rules, one for type-checking definitions, and one for
+type-checking programs. They use slightly different $\vdash$ notation with
+subscripts $_d$ and $_p$ to indicate that they have meaning for pieces of
+syntax other than expressions.
+
+\begin{mathpar}
+\inferrule*[Left=TR-Def]
+{\Delta; \{x_1:\tau_1, \cdots x_n:\tau_n\} \vdash e \cdots : \tau_r}
+{\Delta \vdash_d \texttt{(def $f$ ($x_1$:$\tau_1 \cdots x_n$:$\tau_n$):$\tau_r$ $e \cdots$)} : \checkmark}
+\\
+\inferrule*[Left=TR-Prog]
+{(\Delta; \vdash_d d_1 : \checkmark)\cdots(\Delta; \vdash_d d_n : \checkmark) \and \Delta; \{{\tt input}:{\tt Num}\} \vdash e : \tau}
+{\vdash_p d_1 \cdots d_n e : \checkmark}
+\end{mathpar}
+
+Where in $\vdash_p$, $\Delta$ is constructed by mapping each definition name
+to an arrow type made of its argument types and return type, so 
+\texttt{(def $f$ ($x$:$\tau_1 \cdots x_n$:$\tau_n$):$\tau_r$ $e \cdots$)} would 
+appear in $\Delta$ as $\{f: \tau_1\cdots\tau_n \rightarrow \tau_r\}$. In English,
+TR-Def says that a definition type-checks if its body has the expected return
+type $\tau_r$ when type-checked in an environment with just the arguments of
+the definition mapped to their declared types. A program $p$ type-checks if
+all of its definitions type-check and its main expression has some type in
+the environment that assumes {\tt input} has type {\tt Num} (along with also
+assuming the declared definitions).
+
+\section*{New Errors \& Miscellaneous}
+
+Type errors should be reported with {\tt "Type mismatch"} as usual, including
+type errors resulting from the new rules. If a function application uses a
+function name that isn't defined, the compiler should report an error
+containing {\tt "Unbound function id"}.
+
+It's allowed for variables and functions to use the same name, so there could
+be a top-level definition named {\tt f} and a variable in an argument or let
+named {\tt f}.
+
+It's a well-formedness error for multiple functions to have the same name, or
+for multiple arguments within the same function to have the same name. Report
+these cases with an error that contains the string {\tt "Duplicate"}.
+
+\section*{Implementation Recommendations and Details}
+
+\subsection*{Registers Used by {\tt main}}
+
+You may have reasons to want to use registers like {\tt rbx, rbp, rdi} or
+others. The assembly generated by gcc and clang for {\tt main} may use these
+registers as well, so they should be saved at the beginning of {\tt
+our\_code\_starts\_here} and restored before the final {\tt ret}. You can use
+{\tt push rbx} and {\tt pop rbx} to accomplish this.
+
+\subsection*{Stack Alignment}
+
+Some systems require that the stack pointer {\tt rsp} be aligned at a 16-byte
+(2 word) boundary before making calls into library functions that use system
+calls, like {\tt printf}. If you get stack alignment segmentation
+faults\footnote{We saw this in class
+\url{https://github.com/ucsd-cse131-f19/ucsd-cse131-f19.github.io/blob/master/lectures/10-10-lec5/compile.ml\#L106}}
+you may want to make sure your calling convention always moves {\tt rsp} by
+multiples of 16, which could mean leaving an extra word of space on some
+calls. For example, if your calling convention uses 2 words for the old value
+of {\tt rsp} and the return address, then a function call with an {\it odd}
+number of arguments could end up on an 8-byte boundary. You can test this by
+using {\tt print} in functions with varying numbers of arguments.
+
+\subsection*{Moving Labels into Memory}
+
+In class, we used code like {\tt mov [rsp-16], after\_call} to move a label
+into memory. This actually requires two instructions on some platforms. If
+you see an error like {\tt "format does not support 32-bit absolute
+addresses."} you may be running into this. The solution is simple, just save
+the label into a register first:
+
+\begin{lstlisting}
+mov rax, after_call
+mov [rsp-16], rax
+\end{lstlisting}
+
+\subsection*{Print}
+
+While you're free to implement {\tt print} in any way you prefer that works,
+one that we found expedient is to call a function defined in {\tt main.c}.
+This requires using C's calling convention. On x86-64, this means moving the
+argument into register {\tt rdi}, moving {\tt rsp} to free space at the top
+of the stack, and then using the {\tt call} instruction to push the current
+code address to the stack and jump to the function you wrote in {\tt main}.
+On return, {\tt rsp} should be moved back to its original location, and your
+generated code should ensure that the printed value ends up in {\tt rax}.
+
+\section*{Describing Your Calling Convention}
+
+As you implement Diamondback, you will need to make a number of decisions,
+not least of which is the calling convention you choose, and decisions you
+make around compiling application expressions and definitions. Along with
+your code, you will write a desgin document describing how your calling
+convention works. You should make sure to cover (in whatever order makes
+sense):
+
+\begin{enumerate}
+  \item A description of your calling convention in general terms:
+    \begin{enumerate}
+      \item What is the caller responsible for vs the callee?
+      \item Do you have to do any particularly interesting work to manage the
+      stack or temporary storage?
+      \item Are there improvements you can imagine making in the future?
+    \end{enumerate}
+  \item Pick three example programs that use functions and are interesting in
+  different ways, and use them to describe your calling convention:
+  \begin{enumerate}
+    \item Show their source, generated assembly, and output (you can
+    summarize the generated code if it's quite long)
+    \item Highlight the parts of the generated assembly that make the example
+    interesting, distinct, and/or especially challenging to compile
+  \end{enumerate}
+\end{enumerate}
+
+Still write this even if you don't think you have everything working! In that
+case, in part 2, pick at least one example that {\it doesn't} work, and note
+both its expected output and its actual behavior with your compiler.
+
+\end{document}

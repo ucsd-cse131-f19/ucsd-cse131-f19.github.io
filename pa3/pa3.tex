@@ -176,7 +176,7 @@ matching useful as a suggestion of an implementation strategy.}
 {\Gamma \vdash \texttt{(let (($x\ e_1$)) $e_b \cdots$)} : \tau}
 \\
 \inferrule*[Left=TR-Let-Bindings]
-{\Gamma \vdash e_1 : \tau_1 \and (x_1,\tau)::\Gamma \vdash \texttt{(let (($x_2\ e_2$) $\cdots$) $e_b$)} : \tau}
+{\Gamma \vdash e_1 : \tau_1 \and (x_1,\tau_1)::\Gamma \vdash \texttt{(let (($x_2\ e_2$) $\cdots$) $e_b$)} : \tau}
 {\Gamma \vdash \texttt{(let (($x_1\ e_1$) ($x_2$ $e_2$) $\cdots$) $e_b \cdots$)} : \tau}
 \\
 \inferrule*[Left=TR-Sequence]
