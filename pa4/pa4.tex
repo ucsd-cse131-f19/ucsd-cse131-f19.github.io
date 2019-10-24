@@ -34,23 +34,24 @@ Classroom: \url{FILL} \hspace{1em} Github: \url{FILL}
 \section*{Syntax}
 
 The concrete syntax and type language for Diamondback is below. We use
-$\cdots$ to indicate \textit{one or more} of the previous element. So a
-program $p$ is a sequence of one or more definitions $d$ followed by an
-expression $e$, and a definition has one or more arguments $x \texttt{:}\tau$
-and one or more expressions in its body $e \cdots$. There are \fbox{boxes}
-around the new pieces of concrete syntax.
+$\cdots$ to indicate \textit{zero or more} of the previous
+element\footnote{This is different than the last assignment, but important
+for avoiding some notational clutter.}. So a program $p$ is a sequence of zero
+or more definitions $d$ followed by an expression $e$, and a definition has
+zero or more arguments $x \texttt{:}\tau$ and one or more expressions in its
+body $e \cdots$. There are \fbox{boxes} around the new pieces of concrete
+syntax.
 
 \[
 \begin{array}{ll}
 \begin{array}{lrl}
 e & := & n \mid \texttt{true} \mid \texttt{false} \mid x \\
-  & \mid  & \texttt{(let (($x\ e$) $\cdots$) $e \cdots$)} \\
+  & \mid  & \texttt{(let (($x\ e$) ($x\ e$) $\cdots$) $e\ e \cdots$)} \\
   & \mid  & \texttt{(if $e\ e \ e$)} \\
   & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
-  & \mid  & \texttt{(while $e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
-  & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \mid \fbox{\texttt{($f$)}} \\
-d & := & \fbox{\texttt{(def $f$ ($x$:$\tau \cdots$):$\tau$ $e \cdots$)}} \\
-  & \mid & \fbox{\texttt{(def $f$ ():$\tau$ $e \cdots$)}} \\
+  & \mid  & \texttt{(while $e\ e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
+  & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \\
+d & := & \fbox{\texttt{(def $f$ ($x$:$\tau \cdots$):$\tau$ $e\ e \cdots$)}} \\
 p & := & \fbox{$d \cdots e$} \\
 op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \mid \fbox{\texttt{print}} \\
 op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \\
