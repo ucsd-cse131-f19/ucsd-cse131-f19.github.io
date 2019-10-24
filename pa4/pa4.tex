@@ -38,7 +38,7 @@ $\cdots$ to indicate \textit{one or more} of the previous element. So a
 program $p$ is a sequence of one or more definitions $d$ followed by an
 expression $e$, and a definition has one or more arguments $x \texttt{:}\tau$
 and one or more expressions in its body $e \cdots$. There are \fbox{boxes}
-around the new pieces of syntax.
+around the new pieces of concrete syntax.
 
 \[
 \begin{array}{ll}
@@ -48,8 +48,9 @@ e & := & n \mid \texttt{true} \mid \texttt{false} \mid x \\
   & \mid  & \texttt{(if $e\ e \ e$)} \\
   & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
   & \mid  & \texttt{(while $e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
-  & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \\
+  & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \mid \fbox{\texttt{($f$)}} \\
 d & := & \fbox{\texttt{(def $f$ ($x$:$\tau \cdots$):$\tau$ $e \cdots$)}} \\
+  & \mid & \fbox{\texttt{(def $f$ ():$\tau$ $e \cdots$)}} \\
 p & := & \fbox{$d \cdots e$} \\
 op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \mid \fbox{\texttt{print}} \\
 op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \\
@@ -70,6 +71,39 @@ x,f & := & \textrm{variable and function names} \\
 \end{array}
 \end{array}
 \]
+
+There are two different {\tt def} and function application forms because
+functions are allowed to have zero arguments, but the $\cdots$ notation means
+one or more. You can easily represent arguments in both cases with a list
+that's allowed to be empty.
+
+An example program that computes whether a number is even or odd extremely
+inefficiently and prints several examples is:
+
+\begin{tabular}{lr}
+\begin{lstlisting}
+(def even (n : Num) : Bool
+  (if (== n 0) true (odd (- n 1))))
+(def odd (n : Num) : Bool
+  (if (== n 0) false (even (- n 1))))
+(def test() : Bool
+  (print (even 30))
+  (print (odd 30))
+  (print (even 57))
+  (print (odd 57)))
+
+(test)
+\end{lstlisting}
+& \hspace{5em}
+\begin{lstlisting}
+Expected output:
+true
+false
+false
+true
+true
+\end{lstlisting}
+\end{tabular}
 
 \section*{Semantics}
 
@@ -127,8 +161,8 @@ $\rightarrow$ 10
 
 Diamondback also adds a new primitive, {\tt print}, that prints a value to
 the console followed by a newline. Numbers should print as their
-user-interpreted value, so {\tt (print 22)} should print {\tt 22}, not its
-representation, and {\tt (print true)} should print {\tt true}.
+user-interpreted value, so {\tt (print 22)} should print {\tt 22}, and {\tt
+(print true)} should print {\tt true}.
 
 The entire {\tt print} expression evaluates to the same value as its argument
 (which is the value that gets printed), so {\tt (print (+ 1 7))} evaluates to
@@ -158,8 +192,7 @@ In English, TR-App rule says
 
 \begin{quote}
 If the function definition $f$ has argument types $\tau_1 \cdots$ and return type $\tau_r$, and the
-arguments $e_1\cdots$ of an application of $f$ have matching types with
-definitions $\Delta$ and environment $\Gamma$, then the application has type $\tau_r$.
+arguments $e_1\cdots$ of an application of $f$ have matching types, then the application has type $\tau_r$.
 \end{quote}
 
 It's common to write the type of definitions as $\tau_1 \cdots \rightarrow
@@ -172,7 +205,9 @@ TR-App uses).
 There are also two new rules, one for type-checking definitions, and one for
 type-checking programs. They use slightly different $\vdash$ notation with
 subscripts $_d$ and $_p$ to indicate that they have meaning for pieces of
-syntax other than expressions.
+syntax other than expressions. Since, unlike expressions, we don't calculate
+their overall type, we simply use $\checkmark$ in the rule to indicate that
+they pass all checks.
 
 \begin{mathpar}
 \inferrule*[Left=TR-Def]
@@ -198,9 +233,10 @@ assuming the declared definitions).
 \section*{New Errors \& Miscellaneous}
 
 Type errors should be reported with {\tt "Type mismatch"} as usual, including
-type errors resulting from the new rules. If a function application uses a
-function name that isn't defined, the compiler should report an error
-containing {\tt "Unbound function id"}.
+type errors resulting from the new rules, including passing the wrong number
+of arguments to a function. If a function application uses a function name
+that isn't defined, the compiler should report an error containing {\tt
+"Unbound"}.
 
 It's allowed for variables and functions to use the same name, so there could
 be a top-level definition named {\tt f} and a variable in an argument or let
@@ -208,7 +244,11 @@ named {\tt f}.
 
 It's a well-formedness error for multiple functions to have the same name, or
 for multiple arguments within the same function to have the same name. Report
-these cases with an error that contains the string {\tt "Duplicate"}.
+these cases with an error that contains the string {\tt "Multiple functions"}
+and {\tt "Multiple bindings"} respectively.
+
+An empty function body should be reported with {\tt "Invalid"} as with other
+syntax errors.
 
 \section*{Implementation Recommendations and Details}
 
@@ -258,14 +298,21 @@ code address to the stack and jump to the function you wrote in {\tt main}.
 On return, {\tt rsp} should be moved back to its original location, and your
 generated code should ensure that the printed value ends up in {\tt rax}.
 
+Keep in mind that if you use registers other than {\tt rax}, they may be
+overwritten during the use of print. Wikipedia has a reasonable, brief,
+accurate summary of the callee-save vs. caller-save behavior at
+\url{https://en.wikipedia.org/wiki/X86_calling_conventions\#System_V_AMD64_ABI}.
+We assuming that users of Diamondback will use {\tt gcc} and {\tt clang} on
+systems that use this convention, not the Microsoft convention.
+
 \section*{Describing Your Calling Convention}
 
 As you implement Diamondback, you will need to make a number of decisions,
 not least of which is the calling convention you choose, and decisions you
 make around compiling application expressions and definitions. Along with
-your code, you will write a desgin document describing how your calling
-convention works. You should make sure to cover (in whatever order makes
-sense):
+your code, you will write a desgin document as a separate PDF describing how
+your calling convention works. You should make sure to cover (in whatever
+order makes sense):
 
 \begin{enumerate}
   \item A description of your calling convention in general terms:
