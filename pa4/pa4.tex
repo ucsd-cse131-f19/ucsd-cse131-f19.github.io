@@ -306,25 +306,69 @@ accurate summary of the callee-save vs. caller-save behavior at
 We assuming that users of Diamondback will use {\tt gcc} and {\tt clang} on
 systems that use this convention, not the Microsoft convention.
 
+\section*{Required Tests}
+
+You {\bf must} write the following programs to test your compiler. You can
+pick any little details you want like function names and base case behavior,
+but they must be in files with these names:
+
+\begin{itemize}
+\item {\tt input/fibonacci.boa} -- A program that defines a fibonacci
+function and calls it on {\tt input}.
+\item {\tt input/remainder.boa} -- A program that defines a function that
+takes two arguments and uses repeated subtraction to get the remainder of the
+first divided by the second. Test it on several pairs of inputs and include
+{\tt print} expressions demonstrating it. (Yes, we are asking you to write
+tests for the function you're writing as a test.)
+\item {\tt input/isprime.boa} -- A program that uses the definition from
+{\tt remainder.boa} (you can copy/paste it) along with a loop to test if {\tt
+input} is prime, and print {\tt true} if it is and {\tt false} if not. Your
+algorithm does not have to be sophisticated; it's fine to try the
+numbers from 2 to {\tt input} and check the remainder.
+\item {\tt input/deepstack.boa} -- A program of your choice that has at least
+3 different functions, each with a different number of arguments. When run,
+it should require a runtime stack of at least depth 10, where each function
+has at least one frame represented on the stack.
+\end{itemize}
+
+These tests together will be worth 20\% of your grade (you just have to write
+them, you still get credit even if they don't fully work).
+
+You should start with smaller tests and write many more tests than these. We
+provide these because they usefully exercise your compiler and demonstrate
+that you can write some meaningful computations now.
+
+
 \section*{Describing Your Calling Convention}
 
 As you implement Diamondback, you will need to make a number of decisions,
 not least of which is the calling convention you choose, and decisions you
 make around compiling application expressions and definitions. Along with
 your code, you will write a desgin document as a separate PDF describing how
-your calling convention works. You should make sure to cover (in whatever
-order makes sense):
+your calling convention works. 
+
+There are no restrictions on the calling convention you choose. You could
+implement the x86-64 convention for your functions, the version we discussed
+in class generalized to arbitrary lists of values, or something of your own
+design. Different choices will require different implementation strategies,
+different stack management requirements, and produce code that is
+``interesting'' to debug in various ways.
+
+In your design document, you should make sure to cover (in whatever order
+makes sense) the items below. This report will be worth {\bf 30\% of your
+assignment grade}.
 
 \begin{enumerate}
   \item A description of your calling convention in general terms:
     \begin{enumerate}
-      \item What is the caller responsible for vs the callee?
-      \item Do you have to do any particularly interesting work to manage the
-      stack or temporary storage?
+      \item What does the caller do before and after the call?
+      \item What is the callee responsible for?
       \item Are there improvements you can imagine making in the future?
     \end{enumerate}
+    Use snippets of OCaml code from your compiler to illustrate key features.
   \item Pick three example programs that use functions and are interesting in
-  different ways, and use them to describe your calling convention:
+  different ways (you can use the required tests if you like), and use them
+  to describe your calling convention:
   \begin{enumerate}
     \item Show their source, generated assembly, and output (you can
     summarize the generated code if it's quite long)
@@ -333,8 +377,33 @@ order makes sense):
   \end{enumerate}
 \end{enumerate}
 
-Still write this even if you don't think you have everything working! In that
-case, in part 2, pick at least one example that {\it doesn't} work, and note
-both its expected output and its actual behavior with your compiler.
+Still write this even if you don't have everything working! In that case, in
+part 2, pick at least one example that {\it doesn't} work, and note both its
+expected output and its actual behavior with your compiler.
+
+{\bf Advice on writing}: Whenever you write, be thoughtful about your
+expected audience, and most importantly {\it choose at least one specific
+audience you are writing for}.\footnote{Writing for multiple audiences at the
+same time is of course possible, hence ``at least'' one. It just requires
+more care.} For this assignment, imagine that Diamondback is a custom
+language that your team maintains. You are writing this design document to
+help with the onboarding process for people joining your team. They are
+programmers who know generally how compilers work and how x86-64 works, but
+not how Diamondback has made its choices internally. They will be curious how
+things work, why decisions were made the way they were, and what upcoming
+work on the compiler might look like.
+
+
+\subsubsection*{Rubric}
+
+Note that half of the credit on this assignment is for testing and writing,
+and the other half is for automatically-graded behavior:
+
+\begin{itemize}
+\item Required tests: 20\% (5 each)
+\item Behavior of your compiler on our tests: 50\%
+\item Design doc on calling convention: 30\%
+\end{itemize}
+
 
 \end{document}
