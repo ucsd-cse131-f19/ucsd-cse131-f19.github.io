@@ -1,0 +1,6 @@
+(def (f x : Num) : Bool
+  (< x 10))
+
+(f true)
+
+
