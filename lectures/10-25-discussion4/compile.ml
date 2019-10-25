@@ -209,7 +209,7 @@ let rec e_to_is (e : expr) (si : int) (env : tenv) (defs : def list) =
             sprintf "mov rbx, %s" after;
             sprintf "mov [rsp-%d], rbx" (stackloc stack_index_above_all_arg_space);
             sprintf "mov [rsp-%d], rsp" (stackloc (stack_index_above_all_arg_space + 1));
-            (* Next mov was for an argument, so your calling convention may differ *)
+            (* Next movs are additional to what we discussed in class, moving things above the ret address, etc. *)
             (* sprintf "mov [rsp-%d], [rsp-%d]" (stacklock (stack_index_aboe_all_arg_space + 2) (stackloc si); *)
             (* sprintf "mov [rsp-%d], [rsp-%d]" (stacklock (stack_index_aboe_all_arg_space + 3) (stackloc (si + 1)); *)
             sprintf "sub rsp, %d" (stackloc stack_index_above_all_arg_space);
