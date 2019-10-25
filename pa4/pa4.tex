@@ -394,7 +394,7 @@ things work, why decisions were made the way they were, and what upcoming
 work on the compiler might look like.
 
 
-\subsubsection*{Rubric}
+\section*{Rubric}
 
 Note that half of the credit on this assignment is for testing and writing,
 and the other half is for automatically-graded behavior:
@@ -405,5 +405,19 @@ and the other half is for automatically-graded behavior:
 \item Design doc on calling convention: 30\%
 \end{itemize}
 
+\section*{Extensions}
+
+These are not for credit, but you may enjoy thinking through, implementing,
+or discussing in office hours or with your peers after the assignment is
+complete.
+
+\begin{enumerate}
+\item Support tail calls.
+
+\item In some cases, return type annotations can be omitted to reduce work on the
+programmer. Make the return type annotations optional on function definitions,
+and calculate them as part of building the definitions environment. Report an
+error if the type cannot be calculated without the annotation.
+\end{enumerate}
 
 \end{document}
