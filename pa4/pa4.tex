@@ -51,7 +51,7 @@ e & := & n \mid \texttt{true} \mid \texttt{false} \mid x \\
   & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
   & \mid  & \texttt{(while $e\ e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
   & \mid  & \fbox{\texttt{($f\ e\cdots$)}} \\
-d & := & \fbox{\texttt{(def $f$ ($x$:$\tau \cdots$):$\tau$ $e\ e \cdots$)}} \\
+d & := & \fbox{\texttt{(def $f$ ($x\ $:$\ \tau \cdots$) :$\ \tau$ $e\ e \cdots$)}} \\
 p & := & \fbox{$d \cdots e$} \\
 op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \mid \fbox{\texttt{print}} \\
 op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \\
