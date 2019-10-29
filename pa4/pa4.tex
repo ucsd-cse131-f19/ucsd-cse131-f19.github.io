@@ -141,7 +141,7 @@ false
 The main new feature in Diamondback is function definitions $d$ and function
 applications $\texttt{($f\ e\cdots$)}$. A function application $\texttt{($f\
 e_a\cdots$)}$ uses the function definition with the matching name
-$\texttt{(def $f$ ($x$ :$\tau \cdots$) $e \cdots$)}$, and should evaluate to
+$\texttt{(def $f$ ($x$ :$\tau \cdots$) :$\ \tau\ e \cdots$)}$, and should evaluate to
 the same result as $\texttt{(let (($x\ e_b$) $\cdots$) $e \cdots$)}$, where
 the argument expressions $e_a\cdots$ come from the application, the names
 $x\cdots$ come from the definition, and the body expressions $e_b\cdots$ come
