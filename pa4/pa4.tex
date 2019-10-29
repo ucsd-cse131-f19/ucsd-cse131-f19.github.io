@@ -73,11 +73,6 @@ x,f & := & \textrm{variable and function names} \\
 \end{array}
 \]
 
-There are two different {\tt def} and function application forms because
-functions are allowed to have zero arguments, but the $\cdots$ notation means
-one or more. You can easily represent arguments in both cases with a list
-that's allowed to be empty.
-
 An example program that computes whether a number is even or odd extremely
 inefficiently and prints several examples is:
 
@@ -103,6 +98,39 @@ false
 false
 true
 true
+\end{lstlisting}
+\end{tabular}
+
+Another example program that defines a few small functions and uses them is
+
+\begin{tabular}{lr}
+\begin{lstlisting}
+(def manhattan (x1 : Num y1 : Num x2 : Num y2 : Num) : Num
+  (+ (abs (- x1 x2)) (abs (- y1 y2))))
+(def abs (a : Num) : Num
+  (if (< a 0) (* a -1) a))
+(def print_multiples (a : Num b : Num) : Num
+  (let ((orig (+ a 1)))
+    (while (> a 0)
+      (print (* (- orig a) b))
+      (set a (- a 1)))))
+
+(let ((ignore 0))
+  (print (abs -3))
+  (print (manhattan 0 0 3 4))
+  (print (manhattan 3 4 0 0))
+  (print_multiples 3 2))
+\end{lstlisting}
+& \hspace{5em}
+\begin{lstlisting}
+Expected output:
+3
+7
+7
+2
+4
+6
+false
 \end{lstlisting}
 \end{tabular}
 
