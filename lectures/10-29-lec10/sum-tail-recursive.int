@@ -1,0 +1,4 @@
+(def (sum n : Num sofar : Num) : Num
+  (if (< n 1) sofar (sum (+ n -1) (+ n sofar))))
+
+(sum 400000 0)
