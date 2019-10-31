@@ -200,10 +200,11 @@ let rec e_to_is (e : expr) (si : int) (env : tenv) (is_tail_call : bool) (defs :
             sprintf "mov [rsp-%d], rbx" (stackloc stack_index_above_all_arg_space);
             sprintf "mov [rsp-%d], rsp" (stackloc (stack_index_above_all_arg_space + 1));
             *)
+            sprintf "; start of tail call to function %s" f;
             sprintf "mov rax, [rsp-%d]" (stackloc si);
-            sprintf "mov [rsp-%d], rax" (stackloc 2); (* These are now constants matching parameter positions *)
+            sprintf "mov [rsp-%d], rax ; overwrite arg1 with new arg1" (stackloc 2); (* These are now constants matching parameter positions *)
             sprintf "mov rax, [rsp-%d]" (stackloc (si + 1));
-            sprintf "mov [rsp-%d], rax" (stackloc 3);
+            sprintf "mov [rsp-%d], rax ; overwrite arg2 with new arg2" (stackloc 3);
             (* Leave RSP where it is
             sprintf "sub rsp, %d" (stackloc stack_index_above_all_arg_space);  *)
             sprintf "jmp %s" name; (* In tail recursive cases, this will jump to the beginning of the function, turning the body into a loop! *)
@@ -220,6 +221,7 @@ let rec e_to_is (e : expr) (si : int) (env : tenv) (is_tail_call : bool) (defs :
           let save_arg2 = sprintf "mov [rsp-%d], rax" (stackloc (si + 1)) in
           arg1_is @ [save_arg1] @
           arg2_is @ [save_arg2] @ [
+            sprintf "; start of regular call to function %s" f;
             sprintf "mov rbx, %s" after;
             sprintf "mov [rsp-%d], rbx" (stackloc stack_index_above_all_arg_space);
             sprintf "mov [rsp-%d], rsp" (stackloc (stack_index_above_all_arg_space + 1));
