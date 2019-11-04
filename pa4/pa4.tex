@@ -109,7 +109,7 @@ Another example program that defines a few small functions and uses them is
   (+ (abs (- x1 x2)) (abs (- y1 y2))))
 (def abs (a : Num) : Num
   (if (< a 0) (* a -1) a))
-(def printmultiples (a : Num b : Num) : Num
+(def printmultiples (a : Num b : Num) : Bool
   (let ((orig (+ a 1)))
     (while (> a 0)
       (print (* (- orig a) b))
