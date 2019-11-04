@@ -1,0 +1,4 @@
+(def (fact n : Num sofar : Num) : Num
+  (if (< n 2) sofar
+      (fact (+ n -1) (* n sofar))))
+(fact 3 1)
