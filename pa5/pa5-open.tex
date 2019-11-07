@@ -47,15 +47,17 @@ Your compiler must support:
 \item Some mechanism for constructing heap-allocated data that groups
 together an arbitrary number of values that can have different types. You
 might choose named values (like dictionaries from class) or something
-strictly positional (like tuples).
+strictly positional (like tuples or arrays). These can have their size
+specified implicitly by syntax (like tuples) or programmatically by an
+expression (like arrays with a size initialization position).
 
 \item An expression that can look up values from within heap-allocated data.
 This could be by name or positionally.
 
-\item If a heap-allocated value is the result of a program, its contents
-should be printed all of its contents in some format that makes it clear
-which values are part of the same heap data. For example, in the output all
-the values associated with a particular location may be enclosed in
+\item If a heap-allocated value is the result of a program or printed by {\tt
+print}, all of its contents should be printed in some format that makes it
+clear which values are part of the same heap data. For example, in the output
+all the values associated with a particular location may be enclosed in
 parentheses.
 
 \item Some kind of equality -- your choice of reference or structural equality.
@@ -78,8 +80,7 @@ detect or recover from filling up memory.
 You {\bf must} write the following programs to test your compiler. You can
 pick any details you want like function names and base case behavior, they
 just must be recognizable as the requested data structures and algorithms,
-and they must be in files with the given names.\footnote{You can choose if
-you'd rather implement a functional or imperative style.}
+and they must be in files with the given names.
 
 \begin{itemize}
 
@@ -104,7 +105,8 @@ calling these functions.
 
 \item {\tt input/bst.boa} -- A program that illustrates how your language
 enables the creation of binary search trees, and implements functions to add
-an element and check if an element is in the tree.
+an element and check if an element is in the tree. Include several tests that
+print example output from calling these functions.
 
 \item {\tt input/list.boa} -- A program that illustrates how your language
 enables the creation of linked lists, and four functions: adding an element
@@ -114,7 +116,7 @@ the index of an input n.
 
 \end{itemize}
 
-\subsection*{Handing and Report}
+\subsection*{Handin and Report}
 
 You will submit your implementation to {\tt pa5}, and to {\tt pa5-written}, a
 PDF containing the following:
