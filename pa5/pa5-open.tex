@@ -1,0 +1,167 @@
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{url,hyperref}
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- Egg-Eater}
+
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape,
+  columns=fullflexible
+}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+\begin{document}
+\maketitle 
+
+{\bf Due Date:} 11pm Wednesday, November 13 \hspace{2em} {\bf Open to Collaboration}
+
+Classroom: FILL \hspace{1em} Github: FILL
+
+You will implement Egg-Eater, a language with heap-allocated data.
+
+\section*{Requirements}
+
+This assignment is much more open-ended than previous ones. You will
+implement a compiler for a language with heap allocation.
+
+This requires having a mostly-working compiler from past PAs, but you don't
+have to have a fully-functional multi-argument calling convention working in
+order to complete it, and you're free to use any code from lecture to start
+from.
+
+\subsection*{Required Features}
+
+Your compiler must support:
+
+\begin{itemize}
+
+\item Some mechanism for constructing heap-allocated data that groups
+together an arbitrary number of values that can have different types. You
+might choose named values (like dictionaries from class) or something
+strictly positional (like tuples).
+
+\item An expression that can look up values from within heap-allocated data.
+This could be by name or positionally.
+
+\item If a heap-allocated value is the result of a program, its contents
+should be printed all of its contents in some format that makes it clear
+which values are part of the same heap data. For example, in the output all
+the values associated with a particular location may be enclosed in
+parentheses.
+
+\item Some kind of equality -- your choice of reference or structural equality.
+\end{itemize}
+
+The following features are {\bf explicitly optional}, though you may enjoy
+implementing some of them.
+
+\begin{itemize}
+\item Type checking
+\item Updating elements of heap-allocated values
+\item Structural equality (it's much more implementation work than physical equality)
+\item Detecting when out-of-memory occurs. Your language should be able to
+allocate at least a few tens of thousands of words, but doesn't need to
+detect or recover from filling up memory.
+\end{itemize}
+
+\subsection*{Required Tests}
+
+You {\bf must} write the following programs to test your compiler. You can
+pick any details you want like function names and base case behavior, they
+just must be recognizable as the requested data structures and algorithms,
+and they must be in files with the given names.\footnote{You can choose if
+you'd rather implement a functional or imperative style.}
+
+\begin{itemize}
+
+\item {\tt input/simple\_examples.boa} -- A program with a number of simple
+examples of constructing and accessing heap-allocated data in your language.
+
+\item {\tt input/error1.boa} -- A program with a well-formed, type-checking,
+or runtime error related to heap-allocated values.
+
+\item {\tt input/error2.boa} -- A second program with a different
+well-formed, type-checking, or runtime error related to heap-allocated
+values.
+
+\item {\tt input/error3.boa} -- A third program with a different well-formed,
+type-checking, or runtime error related to heap-allocated values.
+
+\item {\tt input/points.boa} -- A program with a function that takes an x and
+a y coordinate and produces a structure with those fields, and a function
+that takes two points and returns a new point with their x and y coordinates
+added together, along with several tests that print example output from
+calling these functions.
+
+\item {\tt input/bst.boa} -- A program that illustrates how your language
+enables the creation of binary search trees, and implements functions to add
+an element and check if an element is in the tree.
+
+\item {\tt input/list.boa} -- A program that illustrates how your language
+enables the creation of linked lists, and four functions: adding an element
+at the beginning, adding an element at the end, getting an element at an
+index, and creating a linked list of numbers that starts at 0 and goes up to
+the index of an input n.
+
+\end{itemize}
+
+\subsection*{Handing and Report}
+
+You will submit your implementation to {\tt pa5}, and to {\tt pa5-written}, a
+PDF containing the following:
+
+\begin{itemize}
+
+\item (10\%) The concrete grammar of your language, pointing out and
+describing the new concrete syntax beyond Diamondback. Graded on clarity and
+completeness (it's clear what's new, everything new is there) and if it's
+accurately reflected by your {\tt parse} implementation.
+
+\item (10\%) The definition of your language's AST, highlighting new
+expressions and definitions beyond Diamondback. Graded on clarity and
+completeness, and if the abstract syntax is an accurate representation of the
+concrete syntax.
+
+\item (10\%) A diagram of how heap-allocated values are arranged on the heap,
+including any extra words like the size of an allocated value or other
+metadata. Graded on clarity and completeness, and if it matches the
+implementation of heap allocation in the compiler.
+
+\item (55\%) The required tests above (in addition to appearing in the code
+you submit, they should be in the PDF). These will be partially graded on
+your explanation and provided code, and partially on if your compiler
+implements them according to your expectations.
+
+  \begin{itemize}
+
+    \item For each of the files error1-3, explain in which phase your
+    compiler and/or runtime catches the error. (5\% each)
+
+    \item For the others, include the actual output on your compiler, the
+    output you'd like them to have (if there's any difference) and any notes
+    on interesting features of that output. (10\% each)
+  \end{itemize}
+
+  \item (5\%) A description of the thing you think is most interesting or
+  exciting about your design and implementation in 2-3 sentences.
+
+  \item (5\%) A description of a feature you'd like to add to your language
+  next, with an outline of how you'd add it in 2-3 sentences.
+
+  \item (5\%) Pick two other programming languages you know that support
+  heap-allocated data, and describe why your language's design is more like
+  one than the other.
+
+\end{itemize}
+
+
+\end{document}
