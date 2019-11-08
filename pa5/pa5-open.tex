@@ -24,9 +24,7 @@
 
 {\bf Due Date:} 11pm Wednesday, November 13 \hspace{2em} {\bf Open to Collaboration}
 
-Classroom: FILL \hspace{1em} Github: FILL
-
-You will implement Egg-Eater, a language with heap-allocated data.
+Classroom: \url{https://classroom.github.com/a/z5lJNg9F} \hspace{1em} Github: \url{https://github.com/ucsd-cse131-f19/pa5-student}
 
 \section*{Requirements}
 
@@ -49,8 +47,18 @@ strictly positional (like tuples or arrays). These can have their size
 specified implicitly by syntax (like tuples) or programmatically by an
 expression (like arrays with a size initialization position).
 
+For example, you might choose {\tt (tuple $e \cdots$)} for un-named fields
+where the number of expressions determines the size, {\tt (array $e$)} where
+the expression must evaluate to a number and specifies the size, {\tt (dict
+$x\ e\ \cdots$)} as an extension of lecture to multiple fields, or some
+related idea.
+
 \item An expression that can look up values from within heap-allocated data.
-This could be by name or positionally.
+This could be by name or positionally, like {\tt (index $e\ e$)} where the
+second expression is an index, {\tt (index $e\ n$)} where the second position
+is a constant number, or {\tt (get $e\ x$)} where the second position is a
+name. These are not the only options, and there's nothing special about the
+names {\tt get} and {\tt index}.
 
 \item If a heap-allocated value is the result of a program or printed by {\tt
 print}, all of its contents should be printed in some format that makes it
@@ -58,10 +66,15 @@ clear which values are part of the same heap data. For example, in the output
 all the values associated with a particular location may be enclosed in
 parentheses.
 
+\item Any other features needed to express the programs listed in the section
+on required tests below.
+
 \end{itemize}
 
-The following features are {\bf explicitly optional}, though you may enjoy
-implementing some of them.
+The following features are {\bf explicitly optional}, though you may enjoy or
+learn from implementing some of them, and you may want to include them to
+make some of the testing work easier or support particular implementation
+ideas:
 
 \begin{itemize}
 \item Type checking
@@ -115,8 +128,14 @@ the index of an input n.
 
 \subsection*{Handin and Report}
 
-You will submit your implementation to {\tt pa5}, and to {\tt pa5-written}, a
-PDF containing the following:
+You will submit your implementation to {\tt pa5}, which will run any tests
+you write (including the required tests that you add). There are no
+autograding tests or associated points, your submission will be graded
+according to the rubric below. You can submit your code to {\tt pa4-resubmit}
+if you you are strictly extending Diamondback and want to see if you've
+broken any old tests with your new implementation.
+
+To {\tt pa5-written}, submit a PDF containing the following:
 
 \begin{itemize}
 
