@@ -25,7 +25,7 @@
 {\bf Due Date:} 11pm Wednesday, November 20 \hspace{2em} {\bf Open to Collaboration}
 
 Starter code: Start where PA5 left off, or use the PA5 starter code, or use
-your PA4 implementation, or use an implementation from lecture. (See below).
+your PA4 implementation. (See below).
 
 \section*{Requirements}
 
@@ -43,37 +43,52 @@ the following required goals:
 
 \begin{itemize}
 \item Implement both {\bf structural equality} and {\bf reference equality}
-on the heap allocated data you designed.
+on the heap allocated data you designed. As a reminder, {\bf structural
+equality} means comparing the contents of heap values, not just their
+references.
 \item Make sure that {\bf structural equality} and {\bf printing heap values}
 does not result in an infinite loop or stack overflow, but instead returns a
 meaningful value or reports a meaningful error when a cycle is detected. (The
 simplest thing is to detect a cycle and report an error).
-\item Write a new test {\tt input/structequal.boa} that demonstrates how
-structural equality works in your language on non-cyclic values.
-\item Write a new test {\tt input/structequal-cycle.boa} that demonstrates how
-structural equality works in your language on cyclic values.
-\item Write a new test {\tt input/structprint-cycle.boa} that demonstrates how
+\item Write a new test {\tt input/equal.boa} that demonstrates how
+structural and reference equality work in your language on non-cyclic values.
+Make sure to include enough examples, including cases that return true and
+false, to demonstrate the behavior thoroughly.
+\item Write a new test file {\tt input/cycle-print.boa} that demonstrates how
 printing works in your language on cyclic values.
+\item Write a new test {\tt input/cycle-equal.boa} that demonstrates how
+structural equality works in your language on cyclic values.
 \end{itemize}
 
 You will hand in your code to {\tt pa6-heap-code} and a writeup to {\tt
 pa6-heap-written}.
 
-If you submit this option, {\bf include your entire writeup for PA5, with an
-added section describing the new test and how it works}. Include:
+If you submit this option, {\bf include your entire writeup for PA5, which
+can be updated as much as you like, with an added section containing the
+elements below}. Include:
 
 \begin{enumerate}
 
-\item A description of your approach to handling structural equality,
+\item (15\%) A description of your approach to handling structural equality,
 including relevant snippets of C or generated assembly code.
 
-\item A description of your approach to handling cycles, including relevant
+\item (15\%) A description of your approach to handling cycles, including relevant
 snippets of C or generated assembly code.
 
-\item In the test section with the description of each of the three new
-tests, the actual output of the generated binary (in terms of stdout/stderr),
-the output you’d like it to have (if there’s any difference) and any notes on
-interesting features of that output.
+\item (20\% each) In the test section with the description of each of the
+three new tests, the actual output of the generated binary when run (in terms
+of stdout/stderr), the output you’d like it to have (if there’s any
+difference) and any notes on interesting features of that output. Graded on
+completeness and if your implementation matches the desired behavior.
+
+\item (5\%) A description of features other than structural equality and
+handling cycles that you improved since your PA5 submission.
+
+\item (5\%) A list of the resources you used to complete the assignment,
+including message board posts, online resources (including resources
+outside the course readings like Stack Overflow or blog posts with design
+ideas), and students or course staff discussions you had in-person. Please
+do collaborate {\bf and give credit to your collaborators}.
 
 \end{enumerate}
 
@@ -87,11 +102,11 @@ submission, with separate credit for PA6 based on the new features.
 
 You may want to choose this option if you felt your submission for PA5 was
 something you could improve upon and you'd like to explore and finish that
-effort, while being awarded credit for it. You may also simply be more
+effort, while earning credit for it. You may also simply be more
 interested in the structural algorithms relating to equality, printing, and
 cycles.
 
-\subsection*{Implementation Suggestions}
+\subsection*{Implementation Recommendations}
 
 Structural equality is related to the recursive printing required for PA5,
 but takes two arguments and compares them. Remember that if two values have
@@ -124,10 +139,9 @@ set} expression)
 \begin{itemize}
   \item Constant propagation (CP) of constant variables
 
-  \item Constant folding (CF) of arithmetic
+  \item Constant folding (CF) of (at least) arithmetic
 
-  \item Dead code elimination (DCE) for if expressions, while loops, and let
-  expressions of un-unused variables.
+  \item Dead code elimination (DCE) for (at least) if expressions and while loops
 
 \end{itemize}
 
@@ -160,13 +174,12 @@ optimization enables another (so all three are eventually used).
 
 \end{itemize}
 
-\subsection*{Handin and Report}
+\subsection*{Handin, Report, and Grading}
 
 You will submit your implementation to {\tt pa6-opt}, which will run a subset
 of the PA4 grader tests to make sure your compiler hasn't broken any features
-with the optimizations. Your submission will be graded according to the
-rubric below. To {\tt pa6-opt-written}, submit a PDF containing the
-following:
+with the optimizations. You'll also submit a PDF to {\tt pa6-opt-written}
+containing the report questions below. Your grade will be calculated from:
 
 \begin{itemize}
 
@@ -194,9 +207,11 @@ following:
   outside the course readings like Stack Overflow or blog posts with design
   ideas), and students or course staff discussions you had in-person. Please
   do collaborate {\bf and give credit to your collaborators}.
-
-
 \end{itemize}
+
+If you choose to submit this version of PA6, we will grade your original PA5
+submission and PA6 independently. Your score on PA5 {\bf and} PA6 will be the
+{\bf higher} of the two scores.
 
 \subsection*{Implementation Recommendations}
 
