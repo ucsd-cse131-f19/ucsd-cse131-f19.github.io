@@ -1,0 +1,256 @@
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{url,hyperref}
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- PA6}
+
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape,
+  columns=fullflexible
+}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
+\begin{document}
+\maketitle 
+
+{\bf Due Date:} 11pm Wednesday, November 20 \hspace{2em} {\bf Open to Collaboration}
+
+Starter code: Start where PA5 left off, or use the PA5 starter code, or use
+your PA4 implementation, or use an implementation from lecture. (See below).
+
+\section*{Requirements}
+
+You have two choices in this assignment: extend PA5 with more heap allocation
+features or implement some compiler optimizations. You can only hand in one
+of these; if for some reason you hand in to multiple versions of the
+Gradescope assignment, you {\bf must} tell us which one you want us to use
+before the assignment deadline.
+
+\section*{Extend Heap Allocation}
+
+You can submit PA6 as a completion/extension of PA5. For this version of the
+PA, you must satisfy all the same requirements as PA5, with the addition of
+the following required goals:
+
+\begin{itemize}
+\item Implement both {\bf structural equality} and {\bf reference equality}
+on the heap allocated data you designed.
+\item Make sure that {\bf structural equality} and {\bf printing heap values}
+does not result in an infinite loop or stack overflow, but instead returns a
+meaningful value or reports a meaningful error when a cycle is detected. (The
+simplest thing is to detect a cycle and report an error).
+\item Write a new test {\tt input/structequal.boa} that demonstrates how
+structural equality works in your language on non-cyclic values.
+\item Write a new test {\tt input/structequal-cycle.boa} that demonstrates how
+structural equality works in your language on cyclic values.
+\item Write a new test {\tt input/structprint-cycle.boa} that demonstrates how
+printing works in your language on cyclic values.
+\end{itemize}
+
+You will hand in your code to {\tt pa6-heap-code} and a writeup to {\tt
+pa6-heap-written}.
+
+If you submit this option, {\bf include your entire writeup for PA5, with an
+added section describing the new test and how it works}. Include:
+
+\begin{enumerate}
+
+\item A description of your approach to handling structural equality,
+including relevant snippets of C or generated assembly code.
+
+\item A description of your approach to handling cycles, including relevant
+snippets of C or generated assembly code.
+
+\item In the test section with the description of each of the three new
+tests, the actual output of the generated binary (in terms of stdout/stderr),
+the output you’d like it to have (if there’s any difference) and any notes on
+interesting features of that output.
+
+\end{enumerate}
+
+
+
+\subsection*{Grading}
+
+If you choose this option, we will grade {\bf only your PA6 submission}, and
+its grade on the parts related to PA5 will count fully for your PA5
+submission, with separate credit for PA6 based on the new features.
+
+You may want to choose this option if you felt your submission for PA5 was
+something you could improve upon and you'd like to explore and finish that
+effort, while being awarded credit for it. You may also simply be more
+interested in the structural algorithms relating to equality, printing, and
+cycles.
+
+\subsection*{Implementation Suggestions}
+
+Structural equality is related to the recursive printing required for PA5,
+but takes two arguments and compares them. Remember that if two values have
+different {\it tags}, they cannot be equal.
+
+To detect cycles, you may find it useful to store some extra metatdata for
+heap allocated values. This extra metadata can be initialized to 0, and be
+used during the equality and printing algorithms to track whether a
+particular heap-allocated value has already been printed or checked for
+equality during the current traversal of values. Note that since a value
+could be printed or checked for equality more than once, this data should be
+set back to 0 after checking equality or printing.
+
+
+\section*{Implement Compiler Optimizations}
+
+You will implement several compiler optimizations.
+
+\subsection*{Required Features}
+
+Your compiler must support:
+
+\begin{itemize}
+
+\item {\tt input} as in past assignments and variable assignment (the {\tt
+set} expression)
+
+\item Three optimizations:
+
+\begin{itemize}
+  \item Constant propagation (CP) of constant variables
+
+  \item Constant folding (CF) of arithmetic
+
+  \item Dead code elimination (DCE) for if expressions, while loops, and let
+  expressions of un-unused variables.
+
+\end{itemize}
+
+\item A fixpointing optimization that optimizes using all of CP, CF, and DCE
+
+\end{itemize}
+
+\subsection*{Required Tests}
+
+You {\bf must} write the following programs to test your compiler.
+
+\begin{itemize}
+
+\item {\tt input/cp.boa} A program with at least three instances of code that
+is interesting for constant propagation, including at least one instance
+where a constant is {\it not} propagated because it's the value of a variable
+that is assigned to with {\tt set} later on.
+
+\item {\tt input/cf.boa} -- A program with at least three instances of code
+that is interesting for constant folding and where your optimization is
+applied.
+
+\item {\tt input/dce.boa} -- A program with at least three instances of code
+that is interesting for dead code elimination and where your optimization is
+applied.
+
+\item {\tt input/combined.boa} -- A program that demonstrates the fixpointing
+of all three optimizations where in at least two cases applying one
+optimization enables another (so all three are eventually used).
+
+\end{itemize}
+
+\subsection*{Handin and Report}
+
+You will submit your implementation to {\tt pa6-opt}, which will run a subset
+of the PA4 grader tests to make sure your compiler hasn't broken any features
+with the optimizations. Your submission will be graded according to the
+rubric below. To {\tt pa6-opt-written}, submit a PDF containing the
+following:
+
+\begin{itemize}
+
+  \item (5\%) Continuing to pass the tests from PA4.
+
+  \item (10\%) A description of how you implemented constant propagation,
+  including how you avoid propagating a constant that might later be changed
+  by a variable assignment. Include snippets of OCaml code as necessary.
+
+  \item (10\%) A description of how you implemented constant folding, including
+  snippets of OCaml code as necessary. Argue in 2-3 sentences why your
+  optimization will not change the {\it behavior} of any programs, 
+
+  \item (10\%) A description of how you implemented dead code elimination,
+  including snippets of OCaml code as necessary.
+
+  \item (15\% each) For each of the required 4 tests, include the
+  interestingly optimized part of the generated assembly by first running the
+  compiler {\it without} your optimizations, then with them, and point out
+  what changed. Write a sentence or two about the interesting aspects of the
+  change.
+
+  \item (5\%) A list of the resources you used to complete the assignment,
+  including message board posts, online resources (including resources
+  outside the course readings like Stack Overflow or blog posts with design
+  ideas), and students or course staff discussions you had in-person. Please
+  do collaborate {\bf and give credit to your collaborators}.
+
+
+\end{itemize}
+
+\subsection*{Implementation Recommendations}
+
+As an overarching concern, you should focus on finding {\it some} cases where
+you can optimize and ensure that your optimizations don't break anything.
+Some particularly problematic cases are:
+
+\begin{itemize}
+
+\item Checking for overflow when folding arithmetic -- make sure that if you
+perform constant folding on arithmetic it doesn't overflow the representable
+range, and report errors as appropriate.
+
+\item Avoiding propagating a constant past a variable assignment. For
+example, these two programs are not equivalent, even though a naive constant
+propagation may generate the second from the first:
+
+\begin{lstlisting}
+(let ((x 5))
+  (print x)
+  (set x 10)
+  (print x)))
+\end{lstlisting}
+
+\begin{lstlisting}
+(let ((x 5))
+  (print 5)
+  (set x 10)
+  (print 5)))
+\end{lstlisting}
+
+We {\it don't} recommend trying (at least not at first) to make the second
+{\tt print} turn into {\tt 10}.\footnote{This gets quite complex with loops
+and conditionals, and gets into the topic of {\it control-flow analysis},
+which is a bit beyond this assignment} Instead, it's a good idea to be {\it
+safe} and not propagate the {\tt x} variable at all.
+
+In order to detect this case, one approach is to write a function that
+detects if a variable appears on the left-hand side of a {\tt set} within
+another expression:
+
+\begin{verbatim}
+let rec is_variable_set_in_e (e : expr) (x : string) : bool = ...
+\end{verbatim}
+
+Alternatively, you could collect {\it all} the assignable variables in an
+expression, and use that as a helper:
+
+\begin{verbatim}
+let rec get_assignable_vars (e : expr) : string list = ...
+\end{verbatim}
+
+It's up to you to design and find the places to use these functions.
+
+\end{itemize}
+
+\end{document}
