@@ -1,0 +1,158 @@
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- Substitution, Variables, Single-Stepping, and Functions}
+
+\usepackage{listings}
+
+\lstset{
+  keywordstyle=\bfseries\color{blue}, 
+  commentstyle=\ttfamily,
+  basicstyle=\scriptsize\ttfamily,
+  breaklines=true,
+  stepnumber=1,
+  mathescape=true,
+  showstringspaces=false,
+  numbers=left}
+
+
+\pagestyle{empty}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+
+\begin{document}
+
+\begin{minipage}{.6\textwidth}
+\begin{lstlisting}[language=ml]
+| EPair(e1, e2) ->
+  let e1_is = e_to_is e1 si env false in
+  let e2_is = e_to_is e2 (si + 1) env false in
+  let save_e1 = sprintf "mov [rsp-%d], rax" (stackloc si) in
+  let save_e2 = sprintf "mov [rsp-%d], rax" (stackloc (si + 1)) in
+  e1_is @ [save_e1] @ e2_is @ [save_e2] @ [
+    sprintf "mov rax, [rsp-%d]" (stackloc si);
+    sprintf "mov [r15], rax";
+    sprintf "mov rax, [rsp-%d]" (stackloc (si + 1));
+    sprintf "mov [r15 + 8], rax";
+    sprintf "mov rax, r15";
+    sprintf "add r15, 16";
+  ]
+| EFst(e) ->
+  let e_is = e_to_is e si env false in
+  e_is @ [sprintf "mov rax, [rax]"]
+| ESnd(e) ->
+  let e_is = e_to_is e si env false in
+  e_is @ [sprintf "mov rax, [rax+8]"]
+| ESetFst(e_pair, e_val) ->
+  let e1_is = e_to_is e_pair (si + 1) env false in
+  let e2_is = e_to_is e_val si env false in
+  let save_e1 = sprintf "mov [rsp-%d], rax" (stackloc si) in
+  e1_is @ [save_e1] @ e2_is @ [
+    sprintf "mov rbx, [rsp-%d]" (stackloc si);
+    sprintf "mov [rbx], rax"]
+| ESetSnd(e_pair, e_val) ->
+  let e1_is = e_to_is e_pair (si + 1) env false in
+  let e2_is = e_to_is e_val si env false in
+  let save_e1 = sprintf "mov [rsp-%d], rax" (stackloc si) in
+  e1_is @ [save_e1] @ e2_is @ [
+    sprintf "mov rbx, [rsp-%d]" (stackloc si);
+    sprintf "mov [rbx+8], rax"]
+\end{lstlisting}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=c]
+int64_t read_num() {
+  // Read and return a number from the user
+}
+void print(int64_t val) {
+  if((val & 1)) {
+    printf("%lld", (val - 1) / 2);
+  }
+  else if(val == 6) {
+    printf("true");
+  }
+  else if(val == 2) {
+    printf("false");
+  }
+  else if((val & 7) == 0) {
+    int64_t* as_ref = (int64_t*)val;
+    printf("(pair ");
+    print(as_ref[0]);
+    printf(" ");
+    print(as_ref[1]);
+    printf(")");
+  }
+  else {
+    printf("Strange value: %lld", val);
+  }
+}
+int main(int argc, char** argv) {
+  int64_t* HEAP = calloc(sizeof(int64_t), 1000);
+  int64_t result = our_code_starts_here(HEAP);
+  print(result);
+  printf("\n");
+  return 0;
+}
+\end{lstlisting}
+\end{minipage}
+
+For each of the following programs, what will the stack and heap look like
+just before the final {\tt ret}?
+
+\begin{verbatim}
+(pair (pair 3 4) false)
+\end{verbatim}
+
+\vfill
+
+\begin{verbatim}
+(let (pr (pair 3 4))
+  (set-first pr pr))
+\end{verbatim}
+
+\vfill
+
+\begin{verbatim}
+(def range (n : Num m : Num)
+  (if (< m n)
+    false
+    (pair n (range (+ n 1) m))))
+(range 4 7)
+\end{verbatim}
+
+\vfill
+
+\newpage
+
+In this program, what does the stack and heap look like when n = 1 and we
+update it to 0 with the {\tt set} in the while loop?
+
+\begin{verbatim}
+(def read_pair () : (Pair Num Num)
+  (pair (read_num) (read_num)))
+(def maxof (n : Num) : (Pair Num Num)
+  (let ((max 0) (maxpair false))
+    (while (> n 0)
+      (let ((cur (read_pair)) ; reads a pair
+            (sum (+ (first cur) (second cur))))
+          (set n (- n 1))
+          (if (> sum max)
+              (let () (set max sum) (set maxpair cur))
+              false))))
+    maxpair))
+(maxof input)
+
+$ ./maxof.run 3
+4 5
+3 2
+9 3
+(pair 9 3)
+\end{verbatim}
+
+\end{document}
