@@ -70,28 +70,28 @@
 int64_t read_num() {
   // Read and return a number from the user
 }
+
 void print(int64_t val) {
   if((val & 1)) {
     printf("%lld", (val - 1) / 2);
-  }
-  else if(val == 6) {
+  } else if(val == 6) {
     printf("true");
-  }
-  else if(val == 2) {
+  } else if(val == 2) {
     printf("false");
-  }
-  else if((val & 7) == 0) {
+  } else if(val == 0) {
+    printf("null");
+  } else if((val & 7) == 0) {
     int64_t* as_ref = (int64_t*)val;
     printf("(pair ");
     print(as_ref[0]);
     printf(" ");
     print(as_ref[1]);
     printf(")");
-  }
-  else {
-    printf("Strange value: %lld", val);
+  } else {
+    printf("Weird value: %lld", val);
   }
 }
+
 int main(int argc, char** argv) {
   int64_t* HEAP = calloc(sizeof(int64_t), 1000);
   int64_t result = our_code_starts_here(HEAP);
@@ -106,7 +106,7 @@ For each of the following programs, what will the stack and heap look like
 just before the final {\tt ret}?
 
 \begin{verbatim}
-(pair (pair 3 4) false)
+(pair (pair 3 4) null)
 \end{verbatim}
 
 \vfill
@@ -121,7 +121,7 @@ just before the final {\tt ret}?
 \begin{verbatim}
 (def range (n : Num m : Num)
   (if (< m n)
-    false
+    null
     (pair n (range (+ n 1) m))))
 (range 4 7)
 \end{verbatim}
@@ -137,14 +137,14 @@ update it to 0 with the {\tt set} in the while loop?
 (def read_pair () : (Pair Num Num)
   (pair (read_num) (read_num)))
 (def maxof (n : Num) : (Pair Num Num)
-  (let ((max 0) (maxpair false))
+  (let ((max 0) (maxpair null))
     (while (> n 0)
       (let ((cur (read_pair)) ; reads a pair
             (sum (+ (first cur) (second cur))))
           (set n (- n 1))
           (if (> sum max)
               (let () (set max sum) (set maxpair cur))
-              false))))
+              null))))
     maxpair))
 (maxof input)
 
