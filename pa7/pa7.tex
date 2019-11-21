@@ -1,0 +1,331 @@
+
+\documentclass[10pt, oneside]{article}
+\usepackage[letterpaper, scale=0.9, centering]{geometry}
+\usepackage{graphicx}			
+\usepackage{url,hyperref}
+\usepackage{amssymb,amsmath,mathpartir}
+\usepackage{currfile,xstring,multicol,array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[labelformat=empty]{caption}
+
+\title{UCSD CSE131 F19 -- Garter}
+
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape,
+  columns=fullflexible
+}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+\begin{document}
+\maketitle 
+
+{\bf Checkpoint Due Date:} 11pm Wednesday, November 27 \hspace{2em} {\bf Final Due Date:} 11pm {\bf Thursday} December 5
+
+The specific features listed for the checkpoint are {\bf Open to
+Collaboration} (detailed below), and the rest is {\bf Closed to
+Collaboration}.
+
+You will implement memory management atop a type-checked language with
+heap-allocated data and functions.
+
+Classroom: FILL \hspace{1em} Github: FILL
+
+\section*{Syntax}
+
+The concrete syntax and type language for Garter is below. We use $\cdots$ to
+indicate \textit{zero or more} of the previous element. There are
+\fbox{boxes} around the new pieces of concrete syntax.
+
+\[
+\begin{array}{ll}
+\begin{array}{lrl}
+e & := & n \mid \texttt{true} \mid \texttt{false} \mid x \\
+  & \mid  & \texttt{(let (($x\ e$) ($x\ e$) $\cdots$) $e\ e \cdots$)} \\
+  & \mid  & \texttt{(if $e\ e \ e$)} \\
+  & \mid  & \texttt{($op_2$ $e\ e$)} \mid \texttt{($op_1$ $e$)} \\
+  & \mid  & \texttt{(while $e\ e\ e \cdots$)} \mid \texttt{(set $x\ e$)} \\
+  & \mid  & \texttt{($f\ e\cdots$)} \mid \fbox{\texttt{(null $\tau$)}} \\
+  & \mid  & \fbox{\texttt{(get $e$ $n$)}} \mid \fbox{\texttt{(update $e$ $n$ $e$)}} \\
+d & := & \texttt{(def $f$ ($x\ $:$\ \tau \cdots$) :$\ \tau$ $e\ e \cdots$)} \\
+  & \mid  & \fbox{\texttt{(data $C$ ($\tau \cdots$))}} \\
+p & := & d \cdots e \\
+op_1 & := & \texttt{add1} \mid \texttt{sub1} \mid \texttt{isNum} \mid \texttt{isBool} \mid \texttt{print} \\
+op_2 & := & \texttt{+} \mid \texttt{-} \mid \texttt{*} \mid \texttt{<} \mid \texttt{>} \mid \texttt{==} \mid \fbox{\texttt{=}} \\
+n & := & \textrm{63-bit signed number literals} \\
+x,f,C & := & \textrm{variable, function, and constructor names} \\
+\end{array}
+&
+\begin{array}{lrl}
+\tau & := & \texttt{Num} \mid \texttt{Bool} \mid C \\
+\delta & := & \texttt{fun} \mid \texttt{data} \\
+\Delta & := & \{\delta\ f: \tau \cdots \rightarrow \tau, \cdots\} \\
+\Delta[f] & \textit{means} & \textit{look up the type of } f \textit{ in } \Delta \\
+\Gamma & := & \{x:\tau,\cdots\} \\
+\Gamma[x] & \textit{means} & \textit{look up the type of } x \textit{ in } \Gamma \\
+(x,\tau)::\Gamma & \textit{means} & \textit{add } x \textit{ to } \Gamma \textit{ with type } \tau \\
+\Delta;\Gamma \vdash e : \tau & \textit{means} & \textit{with definitions } \Delta \textit{ and env } \Gamma, e \textit{ has type } \tau \\
+\Delta \vdash_d d : \checkmark & \textit{means} & \textit{with definitions } \Delta \textit{ the definition } d \textit{ type-checks} \\
+\vdash_p p : \checkmark & \textit{means} & \textit{the program } p \textit{ type checks } \\
+\end{array}
+\end{array}
+\]
+
+
+\section*{Semantics}
+
+The semantics here are all provided for you, we describe them so you'll be
+able to write accurate tests.
+
+\subsection*{Data Definitions, Construction, and Manipulation}
+
+The main new feature in Garter is data definitions \texttt{(data $C$
+($\tau \cdots$))}, where $s$ is the name of the data definition and the types
+$\tau \cdots$ are the types of the elements stored in instances of the data
+definition. Elements are accessed and updated positionally with \emph{fixed}
+(not computed, as with arrays) numeric indices using \texttt{(get $e$ $n$)}
+and \texttt{(update $e$ $n$ $e$)}.\footnote{As an analogy, data definitions
+are somewhat like structs in C, but use positional lookup instead of names;
+as another analogy, data definitions are like tuples in OCaml and we can
+match on them by statically known positions using functions like {\tt fst}
+and {\tt snd}, but not compute the position of lookup.} The syntax for
+function applications is used to construct new data instances.
+
+As an example, this program evaluates to 67:
+
+\begin{lstlisting}
+(data Pair (Num Num))
+(let (
+    (p1 (Pair 4 5))
+    (p2 (Pair 4 5))
+    (p3 p1)
+    )
+  (update p1 0 11)
+  (update p2 1 56)
+  (+ (get p3 0) (get p2 1)))
+\end{lstlisting}
+
+\subsection*{Printing Data Instances}
+
+In Egg-Eater, locations (referring to instances of data) are a new kind of
+value that can be printed, just like numbers and booleans.
+
+When an instance is printed, it should print in the format
+
+\begin{lstlisting}
+($C$ $v_1$ $v_2$ $\cdots$)
+\end{lstlisting}
+
+Where $C$ is the name of the constructor used to create it, and values $v_1$
+and $v_2$ are the printed form of the values stored in its fields, separated
+by spaces.
+
+For example:
+
+\begin{lstlisting}
+(data Pair (Num Num))
+(data PairOfPairs (Pair Pair))
+(let ((p (PairOfPairs (Pair (+ 1 2) 6) (Pair (add1 6) 8))))
+  p)
+
+# prints:
+(PairOfPairs (Pair 3 6) (Pair 7 8))
+\end{lstlisting}
+
+\subsection*{Equality}
+
+There two types of equality in Egg-Eater, reflecting the new nuances of
+heap-allocated data. The first, \texttt{==}, behaves as before on existing
+values, and on locations referring to instances of data, returns
+\texttt{true} if the \emph{locations} are identical. The second, \texttt{=},
+behaves as before on existing values, and on locations returns \texttt{true}
+if the two instances came from the same constructor and the \emph{contents}
+of those locations are all equal according to \texttt{=}.
+
+For example:
+
+\begin{lstlisting}
+(data Pair (Num Num))
+(data PairOfPair (Pair Pair))
+(data Point (Num Num))
+(let (
+  (p1 (Pair 3 4))
+  (p2 (Pair 3 4))
+  (p3 (Point 3 4))
+  (p4 (Point 3 5))
+  (pp12 (PairOfPair p1 p2))
+  (pp21 (PairOfPair p2 p1))
+  )
+  (print (=  p1 p2)) ; true, same constructor and contents
+  (print (== p1 p2)) ; false, different locations
+  (print (=  p1 p3)) ; false, different constructors
+  (print (== p1 p3)) ; false, different locations
+  (print (=  p3 p4)) ; false, different contents
+  (print (=  pp12 pp21)) ; true, same (nested) contents
+  0
+  )
+\end{lstlisting}
+
+\section*{Type Checking}
+
+Egg-Eater has essentially the same type rules as Diamondback for expressions.
+The definitions environment $\Delta$ is constructed with the types of the
+constructors for data definitions as well as function definitions; these are
+distinguished by either \texttt{data} or \texttt{fun} before the
+name.\footnote{As an implementation note, we found it useful to simply pass
+around the entire list of definitions in several functions.} As an example,
+the definition \texttt{(data Point (Num Num))} would appear in $\Delta$ as
+$\texttt{data Point} : (\texttt{Num } \texttt{Num} \rightarrow \texttt{Point})$.
+There is a new rule for each new syntactic form, except for \texttt{data}
+definitions which don't need separate type checking.
+
+\begin{mathpar}
+\inferrule*[Left=TR-Null]
+{\Delta[\texttt{data}\ $C$] = (\tau_1 \cdots \rightarrow \tau_r) }
+{\Delta;\Gamma \vdash \texttt{(null $C$)} : C}
+\\
+\inferrule*[Left=TR-Get]
+{\Delta;\Gamma \vdash e : $\ C$ \and \Delta[\texttt{data}\ $C$] = (\tau_1 \cdots \tau_n \tau_{n+1} \cdots \rightarrow \tau_r) }
+{\Delta;\Gamma \vdash \texttt{(get $e$ $n$)} : \tau_n}
+\\
+\inferrule*[Left=TR-Update]
+{\Delta;\Gamma \vdash e : $\ C$ \and \Delta[\texttt{data}\ $C$] = (\tau_1 \cdots \tau_n \tau_{n+1} \cdots \rightarrow \tau_r) \and
+\Delta;\Gamma \vdash e_v : \tau_n}
+{\Delta;\Gamma \vdash \texttt{(update $e$ $n$ $e_v$)} : \tau_n}
+\end{mathpar}
+
+There are a few important features here.
+
+\begin{itemize}
+  \item The \texttt{null} expression comes with a type that it should be
+  treated as. The type checker simply checks that this annotation is some
+  \texttt{data} type and treats the \texttt{null} value as that type. This
+  allows us to construct instances of recursively-defined datatypes like
+  \texttt{(Link (Num Link))}.
+  \item In TR-Get and TR-Update, we check that the first expression has a
+  type of some data definition $C$. The types before the $\rightarrow$ are
+  the types of the fields or elements listed in the data definition.
+  \item We assume the existing rule for TR-App in applications, which simply
+  checks that values with the right types are present in order according to
+  the data definition (just like for function calls).
+\end{itemize}
+
+\section*{Application Binary Interface}
+
+\subsection*{Value and Heap Layout}
+
+The value layout is extended to keep track of information needed in garbage
+collection:
+
+\begin{itemize}
+\item {\tt 0xXXXXXXXXXXXXXXX[xxx1]} - Number
+\item {\tt 0x000000000000000[0110]} - True
+\item {\tt 0x000000000000000[0010]} - False
+\item {\tt 0x000000000000000[0000]} - Null
+\item {\tt 0xXXXXXXXXXXXXXXX[x000]} - Data Reference, an address of a data instance on the heap
+laid out as follows (each set of {\tt[]} is one 8-byte word)
+
+  {\tt [ GC word ][ name reference ][ element count n ][ value 1 ][ value 2 ] ... [ value n ]}
+\end{itemize}
+
+The use of the GC word is completely up to your memory management
+implementation and is always initialized to 0 (see below). The name reference
+is the address of a C string that holds the struct's name (essentially a {\tt
+char*}) used in printing and equality. The element count tracks the number of
+elements stored in the data value.
+
+As an example, consider this program:
+
+\begin{lstlisting}
+(data Pair (Num Num))
+(let (
+    (p1 (Pair 4 5))
+    (p2 (Pair 6 7))
+    (p3 p1)
+    )
+    ...)
+\end{lstlisting}
+
+The stack word for {\tt p1} would hold a value like {\tt 0x00000000ABCDE120}, where
+at address {\tt 0x00000000ABCDE120} would be stored:
+
+\begin{verbatim}
+0x00000000ABCDE230 : [ 0x0000000000000000 ] ; gc word
+                     [ 0x00000000NAMEADDR ] ; address of "Pair"
+                     [ 0x0000000000000002 ] ; count of elements
+                     [ 0x0000000000000009 ] ; representation of 4
+                     [ 0x000000000000000B ] ; representation of 5
+\end{verbatim}
+
+Where at {\tt 0xNAMEADDR} we would find the characters {\tt Pair\verb+\+0},
+and 9 and 11 are the representations of 4 and 5. At the stack word for {\tt
+p3} we would also find {\tt 0x00000000ABCDE120}. At the stack word for {\tt
+p2} we should expect to find a different address, say {\tt
+0x00000000ABCDE230}, with a similar layout but different values:
+
+\begin{verbatim}
+0x00000000ABCDE230 : [ 0x0000000000000000 ] ; gc word
+                     [ 0x00000000NAMEADDR ] ; address of "Pair"
+                     [ 0x0000000000000002 ] ; count of elements
+                     [ 0x000000000000000D ] ; representation of 6
+                     [ 0x000000000000000F ] ; representation of 7
+\end{verbatim}
+
+\subsection*{Calling Convention}
+
+We use a calling convention similar to the one discussed in class, so at any
+given moment there are a number of function calls on the stack, each with
+arguments and local variables.
+
+\begin{figure}
+\begin{verbatim}
+        [   UNUSED SPACE    ] <- stack_top
+        ---------------------
+        [local var N        ]
+        [...                ]
+        [local var 1        ]   these locals and args are
+        [arg 1              ]   for the topmost active
+        [...                ]   function call
+        [arg N              ]
+        [prev rsp value     ]
+rsp ->  [return address     ] <- first_frame
+        ---------------------
+                 ...            
+        ---------------------
+        [local var N        ]   these locals and args are
+        [...                ]   for a current active
+        [local var 1        ]   function call
+        [arg 1              ]
+        [...                ]
+        [arg N              ]
+        [prev rsp value     ]
+        [return address     ]
+        ---------------------
+        [local var N        ]  these locals are for
+        [...                ]  the main expression
+        [local var 1        ]
+        [ret ptr to main    ] <- STACK_BOTTOM
+\end{verbatim}
+\end{figure}
+
+Some important highlights:
+
+\begin{itemize}
+\item On the right, we show the addresses stored in the arguments given to
+{\tt try\_gc} which are passed on to the {\tt gc} function you will write.
+This includes {\tt stack\_top}, which is equal to {\tt rsp - (stackloc si)},
+{\tt first\_frame}, which is equal to {\tt rsp}, and {\tt STACK\_BOTTOM},
+which is a global that refers to the original value of {\tt rsp} right after
+calling {\tt our\_code\_starts\_here}. We will say more about each of these
+in the next section.
+\item We made sure the compiler implements the invariant that {\tt rsp -
+(stackloc si)} will always refer to the word above the topmost valid value,
+and that there won't be any invalid values in the local variables or the
+arguments on the stack.
+\end{itemize}
+
+
+\end{document}
