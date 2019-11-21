@@ -113,7 +113,7 @@ As an example, this program evaluates to 67:
 In Egg-Eater, locations (referring to instances of data) are a new kind of
 value that can be printed, just like numbers and booleans.
 
-When an instance is printed, it should print in the format
+When an instance is printed, it prints in the format
 
 \begin{lstlisting}
 ($C$ $v_1$ $v_2$ $\cdots$)
@@ -171,16 +171,14 @@ For example:
 
 \section*{Type Checking}
 
-Egg-Eater has essentially the same type rules as Diamondback for expressions.
+Garter has essentially the same type rules as Diamondback for expressions.
 The definitions environment $\Delta$ is constructed with the types of the
 constructors for data definitions as well as function definitions; these are
-distinguished by either \texttt{data} or \texttt{fun} before the
-name.\footnote{As an implementation note, we found it useful to simply pass
-around the entire list of definitions in several functions.} As an example,
-the definition \texttt{(data Point (Num Num))} would appear in $\Delta$ as
-$\texttt{data Point} : (\texttt{Num } \texttt{Num} \rightarrow \texttt{Point})$.
-There is a new rule for each new syntactic form, except for \texttt{data}
-definitions which don't need separate type checking.
+distinguished by either \texttt{data} or \texttt{fun} before the name. As an
+example, the definition \texttt{(data Point (Num Num))} would appear in
+$\Delta$ as $\texttt{data Point} : (\texttt{Num } \texttt{Num} \rightarrow
+\texttt{Point})$. There is a new rule for each new syntactic form, except for
+\texttt{data} definitions which don't need separate type checking.
 
 \begin{mathpar}
 \inferrule*[Left=TR-Null]
@@ -326,6 +324,43 @@ in the next section.
 and that there won't be any invalid values in the local variables or the
 arguments on the stack.
 \end{itemize}
+
+\section*{The Garbage Collection Interface}
+
+The generated code from Garter checks, on each allocation of a new {\tt data}
+value, if enough space is left on the heap to fit that value. It does this by
+comparing the value in {\tt r15} to the value stored in {\tt HEAP\_END},
+which is a global variable set by {\tt main}. If enough space isn't
+available, the generated code calls the {\tt try\_gc} function with several arguments:
+
+\begin{itemize}
+\item {\tt alloc\_ptr} -- the current value in {\tt r15}
+\item {\tt words\_needed} -- the number of words needed by the allocation
+\item {\tt first\_frame} -- the address of the stored {\tt rsp} in the
+topmost (most-recently-called) stack frame of a Garter function (also the
+most recent value of {\tt rsp} used by Garter)
+\item {\tt stack\_top} -- the address of the word immediately above the stack
+used by Garter; also equal to {\tt rsp - (stackloc si)} at the time of allocation.
+\end{itemize}
+
+The {\tt try\_gc} function uses this information, along with several global
+variables, to call the {\tt gc} function, which you will implement. The {\tt
+gc} function receives
+
+\begin{itemize}
+\item {\tt STACK\_BOTTOM}, which is the address of the bottom-most word on
+the Garter stack, which corresponds to the return pointer to {\tt main} used
+at the end of {\tt our\_code\_starts\_here}
+\item {\tt first\_frame} and {\tt stack\_top} as provided to {\tt try\_gc}
+\item The current value stored in {\tt HEAP}. {\tt HEAP} is initially set to
+the address allocated for the start of the heap in {\tt main} on program
+startup. Your program can (but does not need to) manipulate this.
+\item The current value stored in {\tt HEAP\_END}. {\tt HEAP\_END} is initially set to
+the address immediately {\it after} the end of the heap in {\tt main} on
+program startup. Your program can (but does not need to) manipulate this.
+\end{itemize}
+
+The {\tt gc} function is expected to return a new value for the heap pointer.
 
 
 \end{document}
