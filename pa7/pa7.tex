@@ -8,7 +8,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage[labelformat=empty]{caption}
 
-\title{UCSD CSE131 F19 -- Garter}
+\title{UCSD CSE131 F19 -- Garter Snake}
 
 \usepackage{listings}
 
@@ -110,7 +110,7 @@ As an example, this program evaluates to 67:
 
 \subsection*{Printing Data Instances}
 
-In Egg-Eater, locations (referring to instances of data) are a new kind of
+In Garter, locations (referring to instances of data) are a new kind of
 value that can be printed, just like numbers and booleans.
 
 When an instance is printed, it prints in the format
@@ -137,7 +137,7 @@ For example:
 
 \subsection*{Equality}
 
-There two types of equality in Egg-Eater, reflecting the new nuances of
+There two types of equality in Garter, reflecting the new nuances of
 heap-allocated data. The first, \texttt{==}, behaves as before on existing
 values, and on locations referring to instances of data, returns
 \texttt{true} if the \emph{locations} are identical. The second, \texttt{=},
@@ -211,7 +211,7 @@ There are a few important features here.
   the data definition (just like for function calls).
 \end{itemize}
 
-\section*{Application Binary Interface}
+\section*{Application Binary Interface (ABI)}
 
 \subsection*{Value and Heap Layout}
 
@@ -226,7 +226,7 @@ collection:
 \item {\tt 0xXXXXXXXXXXXXXXX[x000]} - Data Reference, an address of a data instance on the heap
 laid out as follows (each set of {\tt[]} is one 8-byte word)
 
-  {\tt [ GC word ][ name reference ][ element count n ][ value 1 ][ value 2 ] ... [ value n ]}
+  {\tt [ GC word ][ element count n ][ name reference ][ value 1 ][ value 2 ] ... [ value n ]}
 \end{itemize}
 
 The use of the GC word is completely up to your memory management
@@ -247,11 +247,11 @@ As an example, consider this program:
     ...)
 \end{lstlisting}
 
-The stack word for {\tt p1} would hold a value like {\tt 0x00000000ABCDE120}, where
-at address {\tt 0x00000000ABCDE120} would be stored:
+The stack word for {\tt p1} would hold a value like {\tt 0x00000000ABCDE120}, and
+at that address would be stored:
 
 \begin{verbatim}
-0x00000000ABCDE230 : [ 0x0000000000000000 ] ; gc word
+0x00000000ABCDE120 : [ 0x0000000000000000 ] ; gc word
                      [ 0x00000000NAMEADDR ] ; address of "Pair"
                      [ 0x0000000000000002 ] ; count of elements
                      [ 0x0000000000000009 ] ; representation of 4
@@ -259,7 +259,7 @@ at address {\tt 0x00000000ABCDE120} would be stored:
 \end{verbatim}
 
 Where at {\tt 0xNAMEADDR} we would find the characters {\tt Pair\verb+\+0},
-and 9 and 11 are the representations of 4 and 5. At the stack word for {\tt
+and 9 and B are the representations of 4 and 5. At the stack word for {\tt
 p3} we would also find {\tt 0x00000000ABCDE120}. At the stack word for {\tt
 p2} we should expect to find a different address, say {\tt
 0x00000000ABCDE230}, with a similar layout but different values:
@@ -280,9 +280,8 @@ arguments and local variables.
 
 \begin{figure}
 \begin{verbatim}
-        [   UNUSED SPACE    ] <- stack_top
         ---------------------
-        [local var N        ]
+        [local var N        ] <- stack_top
         [...                ]
         [local var 1        ]   these locals and args are
         [arg 1              ]   for the topmost active
@@ -305,6 +304,7 @@ rsp ->  [return address     ] <- first_frame
         [local var N        ]  these locals are for
         [...                ]  the main expression
         [local var 1        ]
+        [ stored rbx value  ]
         [ret ptr to main    ] <- STACK_BOTTOM
 \end{verbatim}
 \end{figure}
@@ -314,18 +314,117 @@ Some important highlights:
 \begin{itemize}
 \item On the right, we show the addresses stored in the arguments given to
 {\tt try\_gc} which are passed on to the {\tt gc} function you will write.
-This includes {\tt stack\_top}, which is equal to {\tt rsp - (stackloc si)},
+This includes {\tt stack\_top}, which is equal to {\tt rsp - (stackloc (si - 1))},
 {\tt first\_frame}, which is equal to {\tt rsp}, and {\tt STACK\_BOTTOM},
 which is a global that refers to the original value of {\tt rsp} right after
 calling {\tt our\_code\_starts\_here}. We will say more about each of these
 in the next section.
 \item We made sure the compiler implements the invariant that {\tt rsp -
-(stackloc si)} will always refer to the word above the topmost valid value,
+(stackloc (si - 1))} will always refer to the word above the topmost valid value,
 and that there won't be any invalid values in the local variables or the
 arguments on the stack.
 \end{itemize}
 
-\section*{The Garbage Collection Interface}
+\subsection*{Command Line Options}
+
+The binaries generated from the Garter compiler have {\it three} command line
+arguments:
+
+\begin{verbatim}
+$ ./output/program.run <heap size in words> <input> <dump>
+\end{verbatim}
+
+The defaults are a 10000 word heap, input equal to 1, and no dumping of the
+heap on exit. If a heap size is specified, that argument is given to {\tt
+setup\_heap} instead of 10000. If an input is specified, it's expected to be
+a number (as in past assignments). The final parameter can only be the string
+{\tt dump}, and its behavior is described below.
+
+\section*{Memory/GC Interface and Features}
+
+The sections above detail how the Garter language works and lays out memory.
+This section details the specific tasks in the assignment including the
+necessary interfaces and places to add code.
+
+\subsection*{Printing Memory (Checkpoint)}
+
+In many cases, it's helpful to print out the state of the heap to aid
+debugging. While you can and should use tools like {\tt gdb} and {\tt lldb}
+to do this, it's also helpful to build some of our own infrastructure.
+
+To support your debugging efforts, you will implement a function that prints
+the heap. You can use it however you like in debugging, and it will also be
+used if the special third argument {\tt "dump"} is given to a compiled
+binary, once the program is complete (e.g. after {\tt
+our\_code\_starts\_here} returns), the {\tt print\_heap} function is called
+with the current value of {\tt HEAP\_START} and the final value of {\tt r15}.
+
+For example, for the input program
+\begin{verbatim}
+(data Point (Num Num))
+(data PLink (Point PLink))
+
+(let ((p1 (Point 4 5))
+      (p2 (PLink p1 (null PLink))))
+  p2)
+\end{verbatim}
+
+A version we wrote shows data like this:
+
+\begin{verbatim}
+  $ ./output/twostructs.run 100 0 dump
+  (PLink (Point 4 5) null)
+  HEAP_START------------------------------------
+  ----------------------------------------------
+  0x618000000080 | GC   - 0
+  0x618000000088 | Size - 2
+  0x618000000088 | Name - Point
+  0x618000000098 | [0]  - 4
+  0x6180000000a0 | [1]  - 5
+  ----------------------------------------------
+  0x6180000000a8 | GC   - 0
+  0x6180000000b0 | Size - 2
+  0x6180000000b0 | Name - PLink
+  0x6180000000c0 | [0]  - 0x618000000080
+  0x6180000000c8 | [1]  - null
+  HEAP_END--------------------------------------
+\end{verbatim}
+
+Here the heap started at {\tt 0x618000000080} and the two values are printed
+with some rich structure -- we used what we knew about the value layout to
+print numbers and null as their actual value (rather than the
+representation), to label the size and name, and so on.
+
+For the checkpoint, you should submit a PDF report with:
+
+\begin{itemize}
+\item The C code for your printing implementation {\bf included in the PDF in
+monospaced font}.
+\item An example program and its output with {\tt dump} that includes on the
+heap at least two different sizes of data instance with at least 3 total
+instances on the heap, using each kind of value (address, null, true/false,
+and numbers) with how you chose to print them.
+\end{itemize}
+
+This checkpoint is due early to encourage you to write some test programs and
+work with the heap representation early. That said, we do {\bf not} encourage
+you to believe that you're on a good pace to complete the assignment if you
+only complete printing by the checkpoint deadline. We really recommend moving
+on beyond this as soon as you can.
+
+Since this part of the assignment is open to collaboration, feel free to
+share cool ideas and tricks you used to implement your printing with one
+another, especially as you practice and recall details of working with
+pointers and heap representations.
+
+Note that the starter code defines both {\tt print\_heap} and {\tt
+print\_stack} -- we found it useful to print and format these differently.
+For the checkpoint, we're only grading based on {\tt print\_heap}'s behavior
+on the dump at the end of the program.
+
+\subsection*{Garbage Collection (Main Assignment)}
+
+\subsubsection*{Runtime Interaction}
 
 The generated code from Garter checks, on each allocation of a new {\tt data}
 value, if enough space is left on the heap to fit that value. It does this by
@@ -339,28 +438,132 @@ available, the generated code calls the {\tt try\_gc} function with several argu
 \item {\tt first\_frame} -- the address of the stored {\tt rsp} in the
 topmost (most-recently-called) stack frame of a Garter function (also the
 most recent value of {\tt rsp} used by Garter)
-\item {\tt stack\_top} -- the address of the word immediately above the stack
+\item {\tt stack\_top} -- the address of the top word in the stack
 used by Garter; also equal to {\tt rsp - (stackloc si)} at the time of allocation.
 \end{itemize}
 
-The {\tt try\_gc} function uses this information, along with several global
-variables, to call the {\tt gc} function, which you will implement. The {\tt
-gc} function receives
+The goal of {\tt try\_gc} is to trigger garbage collection, and check if
+(after the gc step) enough memory is available for the attempted allocation.
+You shouldn't need to change {\tt try\_gc} at all unless you're trying
+something quite exotic, and you can't change the way the runtime calls it
+(because you can't change the generated code).
+
+\subsubsection*{The GC Function}
+
+The {\tt try\_gc} function passes along information to the {\tt gc} function,
+which you will implement. The {\tt gc} function is passed:
 
 \begin{itemize}
 \item {\tt STACK\_BOTTOM}, which is the address of the bottom-most word on
 the Garter stack, which corresponds to the return pointer to {\tt main} used
-at the end of {\tt our\_code\_starts\_here}
+at the end of {\tt our\_code\_starts\_here}.
 \item {\tt first\_frame} and {\tt stack\_top} as provided to {\tt try\_gc}
-\item The current value stored in {\tt HEAP}. {\tt HEAP} is initially set to
-the address allocated for the start of the heap in {\tt main} on program
-startup. Your program can (but does not need to) manipulate this.
-\item The current value stored in {\tt HEAP\_END}. {\tt HEAP\_END} is initially set to
-the address immediately {\it after} the end of the heap in {\tt main} on
-program startup. Your program can (but does not need to) manipulate this.
+\item The current value stored in {\tt HEAP\_START}. {\tt HEAP\_START} is initially set
+by {\tt setup\_heap} on program startup; you can change {\tt setup\_heap} if
+you need to (subject to the constraints below). Your program can (but does
+not need to) manipulate this variable.
+\item The current value stored in {\tt HEAP\_END}. {\tt HEAP\_END} is initially set
+by {\tt setup\_heap} on program startup; you can change {\tt setup\_heap} if
+you need to (subject to the constraints below). Your program can (but does
+not need to) manipulate this variable.
 \end{itemize}
 
-The {\tt gc} function is expected to return a new value for the heap pointer.
+The {\tt gc} function is expected to return a new value for the heap pointer
+after doing any work needed to free up space on the heap. You can choose any
+strategy for collecting garbage, subject to the following constraints:
 
+\begin{itemize}
+\item The generated code will always allocate by putting values at {\tt r15}
+and incrementing {\tt r15}, so your strategy must leave a contiguous region
+of memory for the generated code to use.
+\item Your strategy should allow for programs to use as much live data as the
+number of words given as the command-line argument to the binary. This means
+that, for example, if you choose semispace swapping as your allocation
+strategy, you may want to allocate {\it twice} the space requested so that
+you can actually fit the requested live space.
+\item Your strategy must run out of memory if the program tries to
+allocate {\it more} than the amount of words given at the command line.
+\item Your strategy should not allocate heap space any larger than {\it three
+times} the size of the number of words requested. So you can do twice for
+semispace swapping, or even more if you like, but you cannot dramatically
+over-allocate.
+\end{itemize}
+
+Two straightforward choices are to implement mark/compact and semispace
+swapping -- the lectures and the readings have several descriptions of the
+required use of metadata and algorithms.
+
+\subsubsection*{Implementation Conventions and Recommendations}
+
+The variables in {\tt ALL\_CAPS} are globals in C. You can alter the setup
+for {\tt HEAP\_START} and {\tt HEAP\_END} as needed, and manipulate them as
+necessary during garbage collection. {\tt FINAL\_HEAP\_PTR} is used by the
+generated code and {\tt main} to communicate to the heap printer where to
+stop printing, and you shouldn't need to change it. {\tt STACK\_BOTTOM} is
+set by the generated code to the very bottom of the stack.
+
+We provide a struct definition {\tt Data}:
+
+\begin{verbatim}
+  typedef struct {
+    int64_t gc_metadata;
+    int64_t size;
+    char* name;
+    int64_t elements[];
+  } Data;
+\end{verbatim}
+
+We found it useful to cast pointers into the heap into {\tt Data*} in a
+number of cases -- you can see the existing print and equality functions for
+examples of this use.
+
+You can use
+
+\begin{verbatim}
+$ make output/program.run
+\end{verbatim}
+
+as with past assignments. Do feel free to use tools that may be available on
+your system, like {\tt valgrind}, to check for memory issues as you debug,
+for example on the department lab machines you can use
+
+\begin{verbatim}
+$ valgrind output/program.run
+\end{verbatim}
+
+to check that the program ends with no memory errors.
+
+You can also test your garbage collector by adding tests to the {\tt test.ml}
+file, where there are new test options that allow you to specify heap sizes
+as part of your test (see the given examples).
+
+\section*{Handin and Grading}
+
+As with past assignments, you will hand in both code and a short report. The
+majority of your credit will come from automated grading of your code on this
+assignment, though there are also some open-ended questions we're interested
+in:
+
+\begin{itemize}
+\item 80\% -- auto-grading tests (via {\tt pa8}, some run after final handin)
+\item 20\% -- report submitted to {\tt pa8-written}
+\begin{enumerate}
+
+\item 8\% -- Give an example (as Garter code) of a long-running program that
+allocates a lot of memory that quickly becomes dead across several garbage
+collections. Describe your collector's behavior on that program using a few
+interesting moments during its execution.
+
+\item 8\% -- Give an example (as Garter code) of a program that allocates
+some memory early on that is live throughout the entire program's execution,
+even though some other values are allocated that are later collected as
+garbage. Give a brief description of how much work your collector does
+handling those long-lived live values across the run of the program.
+
+\item 4\% -- Describe something you learned about C programming by completing
+this assignment.
+
+\end{enumerate}
+\end{itemize}
 
 \end{document}
