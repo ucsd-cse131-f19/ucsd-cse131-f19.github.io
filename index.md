@@ -114,7 +114,10 @@ Your grade will be calculated from:
   - PA2 **open collab** (tagged values): 5%
   - PA3 **open collab** (types and loops): 5%
   - PA4 **closed collab** (functions): 9%
-  - Others to come
+  - PA5 **open collab** (heap allocation): 7%
+  - PA6 **open collab** (heap allocation/optimization): 7%
+  - PA7-checkpoint **open collab** (memory management): 3%
+  - PA7-gc **closed collab** (memory management): 9%
 - 40% exams
   - 16% for in-class exams
   - 24% final exam
