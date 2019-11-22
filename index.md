@@ -38,7 +38,7 @@ course, as well as the syllabus.
 - Lecture: Center 109, 9:30am Tue/Thu
 - Discussion Section: Center 212, 8am F
 - Tests **(in Friday Discussion Section)**: Oct 18, Nov 15
-- Final Exam: Dec 12, 8am-11am, Location TBA
+- Final Exam: Dec 12, 8am-11am, Center 109
 
 - Podcasts: [https://podcast.ucsd.edu/watch/fa19/cse131_a00](https://podcast.ucsd.edu/watch/fa19/cse131_a00)
 - Q&A Forum [Campuswire](https://campuswire.com/c/GF25166F0), use access code 8255
