@@ -1,0 +1,63 @@
+>>> def x_squared(x): return x * x
+...
+>>> x_squared(10)
+100
+>>> x_squared(11)
+121
+>>> 2x
+  File "<stdin>", line 1
+    2x
+     ^
+SyntaxError: invalid syntax
+>>> def twox(x): return 2 * x
+...
+>>> twox(50)
+100
+>>> def ddx(f):
+...   def fprime(x):
+...     return (f(x + 0.001) - f(x)) / 0.001
+...   return fprime
+...
+>>> is_this_two_x = ddx(x_squared)
+>>> is_this_two_x(50)
+100.00099999979284
+>>> is_this_two_x(25)
+50.00100000006569
+>>> is_this_two_x
+<function fprime at 0x1070fec80>
+>>> is_this_2 = ddx(twox)
+>>> is_this_2(100)
+2.0000000000095497
+>>> is_this_2(1008)
+1.9999999999527063
+>>> is_this_2
+<function fprime at 0x1070fe578>
+>>>
+>>> ddx(twox)
+<function fprime at 0x10710c5f0>
+>>> ddx(twox)
+<function fprime at 0x10710c668>
+>>> ddx(twox)
+<function fprime at 0x10710c5f0>
+>>> ddx(twox)
+<function fprime at 0x10710c668>
+>>> ddx(twox)
+<function fprime at 0x10710c5f0>
+>>> ddx(twox)
+<function fprime at 0x10710c668>
+>>> ddx(twox)
+<function fprime at 0x10710c5f0>
+>>> x = ddx(twox)
+>>> y = ddx(twox)
+>>> z = ddx(twox)
+>>> x
+<function fprime at 0x10710c668>
+>>> y
+<function fprime at 0x10710c6e0>
+>>> z
+<function fprime at 0x10710c758>
+>>> ddx(twox)(80)
+2.0000000000095497
+>>> (ddx(twox))(80)
+2.0000000000095497
+>>> 
