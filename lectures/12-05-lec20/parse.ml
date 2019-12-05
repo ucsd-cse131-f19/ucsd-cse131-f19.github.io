@@ -146,7 +146,7 @@ let rec parenexp toks : s_exp parsed =
   match (sequence (sequence lparen (many sexp)) rparen) toks with
     | Some((_, exprs), _), remaining -> (Some(SList(exprs)), remaining)
     | _ -> None, toks
-(* expr := <number> | <name> | <parenexp> *)
+(* expr := <parenexp> | <name> | <num> *)
 and sexp toks : s_exp parsed = (either (either parenexp name) num) toks
 
 let parse2 (toks : (string * string) list) : s_exp =
@@ -158,5 +158,6 @@ let parse2 (toks : (string * string) list) : s_exp =
 let () =
   begin
     printf "%s\n" (str_of_toks (tok "(5 6 xyz (11 30))" 0 pats));
+    printf "%s\n" (str_of_expr (parse (tok "(5 6 xyz (11 30))" 0 pats)));
     printf "%s\n" (str_of_expr (parse2 (tok "(5 6 xyz (11 30))" 0 pats)));
   end
